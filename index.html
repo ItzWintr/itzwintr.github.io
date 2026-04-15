@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>0xWinter | Alvaro Saura - Cybersecurity Expert</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#e4e2e4",
+                        "primary": "#abc7ff",
+                        "surface-tint": "#abc7ff",
+                        "on-tertiary": "#2f3132",
+                        "primary-fixed-dim": "#abc7ff",
+                        "tertiary-container": "#727476",
+                        "surface-container": "#1f1f21",
+                        "surface": "#131315",
+                        "secondary-fixed-dim": "#c7c6cb",
+                        "tertiary-fixed": "#e2e2e4",
+                        "on-primary-container": "#fcfbff",
+                        "surface-container-high": "#2a2a2c",
+                        "on-secondary-container": "#b5b4ba",
+                        "on-tertiary-fixed-variant": "#454749",
+                        "surface-bright": "#39393b",
+                        "outline": "#8b919f",
+                        "primary-container": "#0071e3",
+                        "secondary-container": "#46464b",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed": "#001b3f",
+                        "on-surface": "#e4e2e4",
+                        "tertiary": "#c6c6c8",
+                        "on-tertiary-container": "#fbfbfd",
+                        "error": "#ffb4ab",
+                        "on-primary": "#002f66",
+                        "tertiary-fixed-dim": "#c6c6c8",
+                        "on-background": "#e4e2e4",
+                        "inverse-primary": "#005cbb",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed": "#1a1b1f",
+                        "surface-container-low": "#1b1b1d",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#1a1c1d",
+                        "on-surface-variant": "#c1c6d6",
+                        "surface-container-lowest": "#0e0e10",
+                        "surface-container-highest": "#353437",
+                        "surface-variant": "#353437",
+                        "secondary-fixed": "#e3e2e7",
+                        "on-secondary": "#2f3034",
+                        "surface-dim": "#131315",
+                        "inverse-on-surface": "#303032",
+                        "on-secondary-fixed-variant": "#46464b",
+                        "outline-variant": "#414753",
+                        "background": "#131315",
+                        "secondary": "#c7c6cb",
+                        "on-primary-fixed-variant": "#00458f",
+                        "primary-fixed": "#d7e2ff"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #020203;
+            color: #e4e2e4;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .glass-panel {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.01));
+            backdrop-filter: blur(16px) saturate(150%);
+            -webkit-backdrop-filter: blur(16px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .glass-panel::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.04) 50%, rgba(255, 255, 255, 0) 100%);
+            transform: skewX(-25deg);
+            transition: all 0.75s ease;
+            pointer-events: none;
+        }
+
+        .glass-panel:hover {
+            box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.4);
+            transform: translateY(-2px);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02));
+        }
+
+        .glass-panel:hover::after {
+            left: 150%;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #abc7ff 0%, #0071e3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .aurora-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -10;
+            overflow: hidden;
+            background: #020203;
+        }
+
+        .aurora-blob {
+            position: absolute;
+            filter: blur(120px);
+            opacity: 0.7;
+            animation: float 20s infinite ease-in-out alternate;
+            border-radius: 50%;
+        }
+
+        .blob-1 {
+            top: -20%;
+            left: -10%;
+            width: 60vw;
+            height: 60vh;
+            background: rgba(150, 10, 103, 0.35);
+            /* Emerald Green */
+            animation-delay: 0s;
+        }
+
+        .blob-2 {
+            top: 30%;
+            left: 50%;
+            width: 70vw;
+            height: 70vh;
+            background: rgba(139, 92, 246, 0.3);
+            /* Deep Purple */
+            animation-delay: -5s;
+        }
+
+        .blob-3 {
+            bottom: -20%;
+            left: 10%;
+            width: 50vw;
+            height: 50vh;
+            background: rgba(18, 8, 153, 0.25);
+            /* Cyan */
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+            }
+
+            33% {
+                transform: translate(15vw, -10vh) scale(1.1) rotate(5deg);
+            }
+
+            66% {
+                transform: translate(-10vw, 10vh) scale(0.9) rotate(-5deg);
+            }
+
+            100% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="selection:bg-primary/30">
+    <div class="aurora-bg">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="aurora-blob blob-3"></div>
+    </div>
+    <!-- TopNavBar -->
+    <nav class="fixed top-0 w-full z-50 bg-zinc-950/70 backdrop-blur-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]">
+        <div class="flex justify-between items-center px-6 md:px-12 h-20 w-full">
+            <div class="text-lg font-bold tracking-tighter text-zinc-100">
+                <span class="md:hidden">0xW</span>
+                <span class="hidden md:inline">0xWINTER</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8 font-['Inter'] tracking-tight font-medium text-sm">
+                <a class="nav-link text-zinc-400 hover:text-zinc-100 border-b-2 border-transparent pb-1 transition-all duration-300"
+                    href="#intelligence">Certifications</a>
+                <a class="nav-link text-zinc-400 hover:text-zinc-100 border-b-2 border-transparent pb-1 transition-all duration-300"
+                    href="#technical">Tools</a>
+                <a class="nav-link text-zinc-400 hover:text-zinc-100 border-b-2 border-transparent pb-1 transition-all duration-300"
+                    href="#archive">Trajectory</a>
+                <a class="nav-link text-zinc-400 hover:text-zinc-100 border-b-2 border-transparent pb-1 transition-all duration-300"
+                    href="#contact">Socials</a>
+            </div>
+            <div class="flex items-center gap-6">
+                <a class="hidden md:block bg-gradient-to-br from-primary to-primary-container px-6 py-2 rounded-full text-on-primary font-semibold text-sm scale-95 duration-200 active:opacity-80"
+                    href="#contact">
+                    Contact
+                </a>
+            </div>
+        </div>
+    </nav>
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <section id="home" class="min-h-screen flex flex-col justify-center px-6 md:px-12 max-w-7xl mx-auto py-24">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="space-y-8 order-2 md:order-1">
+                    <div
+                        class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full glass-panel text-primary text-xs font-bold tracking-widest uppercase">
+                        <span class="relative flex h-2 w-2">
+                            <span
+                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                        </span>
+                        Active: CTF &amp; Bug Bounties
+                    </div>
+                    <div class="space-y-4">
+                        <h1 class="text-5xl md:text-7xl font-bold tracking-tighter leading-tight">
+                            Alvaro Saura <br />
+                            <span class="text-gradient">0xWinter</span>
+                        </h1>
+                        <p class="text-xl md:text-2xl text-on-surface-variant max-w-xl leading-relaxed">
+                            Cybersecurity Expert. Red Team eJPTv2 &amp; Blue Team Google Certified. Specialized in
+                            offensive security and defensive intelligence.
+                        </p>
+                    </div>
+                    <div class="glass-panel p-6 rounded-xl max-w-md">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-primary/10 rounded-lg">
+                                <span class="material-symbols-outlined text-primary"
+                                    style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                            </div>
+                            <div>
+                                <h3 class="text-zinc-100 font-bold uppercase tracking-widest text-[10px]">Elite Ranking
+                                </h3>
+                                <p class="text-on-surface leading-tight font-medium">3 consecutive months TOP 1 SPAIN on
+                                    TryHackMe</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-4 pt-4">
+                        <a class="px-8 py-4 rounded-full bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold transition-transform hover:scale-[1.02] active:scale-95"
+                            href="https://wa.me/34722894783?text=">
+                            Direct Link
+                        </a>
+                        <a class="px-8 py-4 rounded-full glass-panel text-zinc-100 font-bold hover:bg-white/5 transition-all"
+                            href="#technical">
+                            View Arsenal
+                        </a>
+                    </div>
+                </div>
+                <div class="order-1 md:order-2 flex justify-center md:justify-end">
+                    <div class="relative group">
+                        <div
+                            class="absolute -inset-1 bg-gradient-to-r from-primary to-primary-container rounded-[2rem] blur opacity-20 group-hover:opacity-75 transition duration-1000">
+                        </div>
+                        <div class="relative aspect-square w-64 md:w-96 overflow-hidden rounded-[2rem] glass-panel p-2">
+                            <img alt="portrait"
+                                class="w-full h-full object-cover rounded-[1.8rem] transition-all duration-700"
+                                data-alt="Portrait of a focused cybersecurity professional in a modern dark setting with blue ambient lighting highlights"
+                                src="assets/LINKEDIN.png" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Certifications -->
+        <section class="px-6 md:px-12 max-w-7xl mx-auto py-24" id="intelligence">
+            <div class="mb-16">
+                <h2 class="text-zinc-500 uppercase tracking-[0.2em] text-xs font-bold mb-4">Core Accreditations</h2>
+                <div class="h-1 w-20 bg-primary"></div>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass-panel p-10 rounded-xl group">
+                    <span
+                        class="material-symbols-outlined text-4xl text-primary mb-6 group-hover:scale-110 transition-transform block">verified_user</span>
+                    <h3 class="text-2xl font-bold mb-4">eJPTv2</h3>
+                    <p class="text-on-surface-variant text-sm leading-relaxed">Junior Penetration Tester certification
+                        focused on practical penetration testing methodologies.</p>
+                </div>
+                <div class="glass-panel p-10 rounded-xl group">
+                    <span
+                        class="material-symbols-outlined text-4xl text-primary mb-6 group-hover:scale-110 transition-transform block">shield_with_heart</span>
+                    <h3 class="text-2xl font-bold mb-4">Google Cybersecurity</h3>
+                    <p class="text-on-surface-variant text-sm leading-relaxed">Comprehensive professional training in
+                        threat detection, response, and security operations.</p>
+                </div>
+                <div class="glass-panel p-10 rounded-xl group">
+                    <span
+                        class="material-symbols-outlined text-4xl text-primary mb-6 group-hover:scale-110 transition-transform block">router</span>
+                    <h3 class="text-2xl font-bold mb-4">CISCO Network Defense</h3>
+                    <p class="text-on-surface-variant text-sm leading-relaxed">Strategic network architecture defense
+                        and enterprise-level infrastructure security.</p>
+                </div>
+            </div>
+        </section>
+        <!-- Technical Arsenal (Bento Grid) -->
+        <section class="px-6 md:px-12 max-w-7xl mx-auto py-24" id="technical">
+            <div class="mb-16 text-center">
+                <h2 class="text-zinc-500 uppercase tracking-[0.2em] text-xs font-bold mb-4">Technical Arsenal</h2>
+                <p class="text-3xl font-bold tracking-tight">Precision Grade Tooling</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div
+                    class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 aspect-square hover:bg-primary/5 transition-colors">
+                    <span class="material-symbols-outlined text-3xl text-primary">analytics</span>
+                    <div class="flex flex-col items-center gap-1.5">
+                        <span class="text-base font-bold tracking-tight text-center leading-none">Splunk</span>
+                        <span
+                            class="text-[10px] text-zinc-500 uppercase tracking-widest text-center leading-none">SIEM</span>
+                    </div>
+                </div>
+                <div
+                    class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 aspect-square hover:bg-primary/5 transition-colors">
+                    <span class="material-symbols-outlined text-3xl text-primary">data_object</span>
+                    <div class="flex flex-col items-center gap-1.5">
+                        <span class="text-base font-bold tracking-tight text-center leading-none">Elastik</span>
+                        <span
+                            class="text-[10px] text-zinc-500 uppercase tracking-widest text-center leading-none">SIEM</span>
+                    </div>
+                </div>
+                <div
+                    class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 aspect-square hover:bg-primary/5 transition-colors">
+                    <span class="material-symbols-outlined text-4xl text-primary"
+                        style="font-variation-settings: 'FILL' 1;">security</span>
+                    <div class="flex flex-col items-center gap-1.5">
+                        <span class="text-lg font-bold tracking-tight text-center leading-none">Burpsuite</span>
+                        <span class="text-[10px] text-zinc-500 uppercase tracking-widest text-center leading-none">WEB
+                            INTERCEPT</span>
+                    </div>
+                </div>
+                <div
+                    class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 aspect-square hover:bg-primary/5 transition-colors">
+                    <span class="material-symbols-outlined text-3xl text-primary">hub</span>
+                    <div class="flex flex-col items-center gap-1.5">
+                        <span class="text-base font-bold tracking-tight text-center leading-none">Caido</span>
+                        <span class="text-[10px] text-zinc-500 uppercase tracking-widest text-center leading-none">WEB
+                            INTERCEPT</span>
+                    </div>
+                </div>
+                <div
+                    class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 aspect-square hover:bg-primary/5 transition-colors">
+                    <span class="material-symbols-outlined text-3xl text-primary">radar</span>
+                    <div class="flex flex-col items-center gap-1.5">
+                        <span class="text-base font-bold tracking-tight text-center leading-none">Wireshark</span>
+                        <span
+                            class="text-[10px] text-zinc-500 uppercase tracking-widest text-center leading-none">PACKET
+                            ANALYSIS</span>
+                    </div>
+                </div>
+                <div
+                    class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 aspect-square hover:bg-primary/5 transition-colors">
+                    <span class="material-symbols-outlined text-3xl text-primary">code</span>
+                    <div class="flex flex-col items-center gap-1.5">
+                        <span class="text-base font-bold tracking-tight text-center leading-none">Python / Bash</span>
+                        <span
+                            class="text-[10px] text-zinc-500 uppercase tracking-widest text-center leading-none">SCRIPTING</span>
+                    </div>
+                </div>
+                <div
+                    class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 aspect-square hover:bg-primary/5 transition-colors">
+                    <span class="material-symbols-outlined text-3xl text-primary">database</span>
+                    <div class="flex flex-col items-center gap-1.5">
+                        <span class="text-base font-bold tracking-tight text-center leading-none">SQL</span>
+                        <span
+                            class="text-[10px] text-zinc-500 uppercase tracking-widest text-center leading-none">DATABASES</span>
+                    </div>
+                </div>
+                <div
+                    class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 aspect-square hover:bg-primary/5 transition-colors">
+                    <span class="material-symbols-outlined text-3xl text-primary">terminal</span>
+                    <div class="flex flex-col items-center gap-1.5">
+                        <span class="text-base font-bold tracking-tight text-center leading-none">wfuzz</span>
+                        <span
+                            class="text-[10px] text-zinc-500 uppercase tracking-widest text-center leading-none">DIRECTORY
+                            FUZZING</span>
+                    </div>
+                </div>
+                <div
+                    class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 aspect-square hover:bg-primary/5 transition-colors">
+                    <span class="material-symbols-outlined text-3xl text-primary">folder_open</span>
+                    <div class="flex flex-col items-center gap-1.5">
+                        <span class="text-base font-bold tracking-tight text-center leading-none">gobuster</span>
+                        <span
+                            class="text-[10px] text-zinc-500 uppercase tracking-widest text-center leading-none">DIRECTORY
+                            FUZZING</span>
+                    </div>
+                </div>
+                <div
+                    class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 aspect-square hover:bg-primary/5 transition-colors">
+                    <span class="material-symbols-outlined text-3xl text-primary">key</span>
+                    <div class="flex flex-col items-center gap-1.5">
+                        <span class="text-base font-bold tracking-tight text-center leading-none">hashcat</span>
+                        <span class="text-[10px] text-zinc-500 uppercase tracking-widest text-center leading-none">HASH
+                            CRACKING</span>
+                    </div>
+                </div>
+                <div
+                    class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 aspect-square hover:bg-primary/5 transition-colors">
+                    <span class="material-symbols-outlined text-3xl text-primary">person_search</span>
+                    <div class="flex flex-col items-center gap-1.5">
+                        <span class="text-base font-bold tracking-tight text-center leading-none">JohnTheRipper</span>
+                        <span class="text-[10px] text-zinc-500 uppercase tracking-widest text-center leading-none">HASH
+                            CRACKING/BRUTEFORCE</span>
+                    </div>
+                </div>
+                <div
+                    class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 aspect-square hover:bg-primary/5 transition-colors">
+                    <span class="material-symbols-outlined text-3xl text-primary">public</span>
+                    <div class="flex flex-col items-center gap-1.5">
+                        <span class="text-base font-bold tracking-tight text-center leading-none">OSINT</span>
+                        <span class="text-[10px] text-zinc-500 uppercase tracking-widest text-center leading-none">OPEN
+                            SOURCE INTELLIGENCE</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Timeline (Editorial Layout) -->
+        <section class="px-6 md:px-12 max-w-4xl mx-auto py-24" id="archive">
+            <div class="mb-16">
+                <h2 class="text-zinc-500 uppercase tracking-[0.2em] text-xs font-bold mb-4">Trajectory</h2>
+                <p class="text-3xl font-bold tracking-tight">Professional Evolution</p>
+            </div>
+            <div class="space-y-0 relative border-l border-zinc-800 ml-4 md:ml-0">
+                <div class="relative pl-12 pb-16">
+                    <div
+                        class="absolute w-4 h-4 bg-primary rounded-full -left-2 top-0 shadow-[0_0_15px_rgba(171,199,255,0.5)]">
+                    </div>
+                    <span class="text-primary font-mono text-sm tracking-tighter block mb-2">2025 — 2026</span>
+                    <h3 class="text-xl font-bold mb-2">CISCO Network Defense &amp; Google Cybersecurity Certificates
+                    </h3>
+                    <p class="text-on-surface-variant leading-relaxed">Advanced academic specialization in architectural
+                        defense systems and enterprise-grade threat management.</p>
+                </div>
+                <div class="relative pl-12 pb-16">
+                    <div
+                        class="absolute w-4 h-4 bg-zinc-800 rounded-full -left-2 top-0 group-hover:bg-primary transition-colors">
+                    </div>
+                    <span class="text-zinc-500 font-mono text-sm tracking-tighter block mb-2">2023 — 2025</span>
+                    <h3 class="text-xl font-bold mb-2">eJPTv2 CERTIFICATION</h3>
+                    <p class="text-on-surface-variant leading-relaxed">Successful mastery of offensive security
+                        methodologies, penetration testing, and ethical hacking protocols.</p>
+                </div>
+                <div class="relative pl-12 pb-16">
+                    <div class="absolute w-4 h-4 bg-zinc-800 rounded-full -left-2 top-0"></div>
+                    <span class="text-zinc-500 font-mono text-sm tracking-tighter block mb-2">2018 — 2023</span>
+                    <h3 class="text-xl font-bold mb-2">System Administrator &amp; Computer Repair Technician</h3>
+                    <p class="text-on-surface-variant leading-relaxed">Infrastructure maintenance, system
+                        troubleshooting, and hardware engineering across multiple hardware environments.</p>
+                </div>
+                <div class="relative pl-12">
+                    <div class="absolute w-4 h-4 bg-zinc-800 rounded-full -left-2 top-0"></div>
+                    <span class="text-zinc-500 font-mono text-sm tracking-tighter block mb-2">2016 — 2018</span>
+                    <h3 class="text-xl font-bold mb-2">Grado en Sistemas Microinformáticos y Redes</h3>
+                    <p class="text-on-surface-variant leading-relaxed">Foundational training in networking, computing
+                        systems, and technical infrastructure management.</p>
+                </div>
+            </div>
+        </section>
+        <!-- Contact Area -->
+        <section class="px-6 md:px-12 max-w-7xl mx-auto py-24" id="contact">
+            <div class="glass-panel p-12 md:p-20 rounded-3xl text-center relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] -mr-32 -mt-32"></div>
+                <h2 class="text-4xl md:text-6xl font-bold tracking-tighter mb-8">Establish Connection</h2>
+                <p class="text-on-surface-variant text-lg max-w-2xl mx-auto mb-12 leading-relaxed">
+                    Ready to fortify your perimeter or discuss cybersecurity strategies. Reach out via secure channels.
+                </p>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+                    <a class="w-full md:w-auto px-10 py-5 glass-panel rounded-xl flex items-center justify-center gap-3 hover:bg-white/5 transition-all text-zinc-100 font-bold tracking-tight"
+                        href="https://wa.me/34722894783?text=">
+                        <span class="material-symbols-outlined text-primary">chat</span>
+                        WhatsApp
+                    </a>
+                    <a class="w-full md:w-auto px-10 py-5 glass-panel rounded-xl flex items-center justify-center gap-3 hover:bg-white/5 transition-all text-zinc-100 font-bold tracking-tight"
+                        href="mailto:alvarosauracuenca@outlook.es">
+                        <span class="material-symbols-outlined text-primary">alternate_email</span>
+                        alvarosauracuenca@outlook.es
+                    </a>
+                    <a class="w-full md:w-auto px-10 py-5 glass-panel rounded-xl flex items-center justify-center gap-3 hover:bg-white/5 transition-all text-zinc-100 font-bold tracking-tight"
+                        href="https://www.linkedin.com/in/winterpentesting/">
+                        <span class="material-symbols-outlined text-primary">share</span>
+                        LinkedIn
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-zinc-950 w-full py-16">
+        <div
+            class="flex flex-col md:flex-row justify-between items-center px-12 max-w-7xl mx-auto border-t border-zinc-800/20 pt-8">
+            <div
+                class="font-['Inter'] uppercase tracking-widest text-[10px] text-zinc-500 text-center md:text-left mb-8 md:mb-0">
+                © 2024 0xWINTER, CYBERSECURITY ANALYST. CERTIFIED JUNIOR PENETRATION TESTER.
+            </div>
+            <div class="flex gap-12 font-['Inter'] uppercase tracking-widest text-[10px]">
+                <a class="text-zinc-500 hover:text-blue-400 transition-all" href="#">MURCIA, SPAIN</a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const sections = document.querySelectorAll("section[id]");
+            const navLinks = document.querySelectorAll(".nav-link");
+
+            const observerOptions = {
+                root: null,
+                rootMargin: "-20% 0px -60% 0px",
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const currentId = entry.target.getAttribute("id");
+
+                        navLinks.forEach(link => {
+                            link.classList.remove("text-blue-400", "border-blue-500");
+                            link.classList.add("text-zinc-400", "border-transparent");
+
+                            if (link.getAttribute("href") === `#${currentId}`) {
+                                link.classList.remove("text-zinc-400", "border-transparent");
+                                link.classList.add("text-blue-400", "border-blue-500");
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+
+</html>
