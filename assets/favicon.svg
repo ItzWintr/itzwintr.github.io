@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <rect width="100%" height="100%" fill="black"></rect>
+  <text x="50%" y="55%" font-size="28" fill="white" text-anchor="middle" font-family="monospace">
+    0xW
+  </text>
+</svg>
