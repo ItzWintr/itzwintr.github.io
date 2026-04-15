@@ -10,7 +10,7 @@ const translations = {
         // Hero
         hero_tag: "Active: CTF & Bug Bounties",
         hero_desc: "Cybersecurity Expert. Red Team eJPTv2 & Blue Team Google Certified. Specialized in offensive security and defensive intelligence.",
-        hero_btn1: "Direct Link",
+        hero_btn1: "Contact",
         hero_btn2: "View Arsenal",
 
         // Certifications
@@ -63,7 +63,7 @@ const translations = {
         // Hero
         hero_tag: "Activo: CTF & Bug Bounties",
         hero_desc: "Experto en Ciberseguridad. Red Team eJPTv2 & Blue Team Google Certified. Especializado en seguridad ofensiva e inteligencia defensiva.",
-        hero_btn1: "Enlace Directo",
+        hero_btn1: "Contacto",
         hero_btn2: "Ver Arsenal",
 
         // Certifications
