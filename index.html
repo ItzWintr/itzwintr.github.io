@@ -218,19 +218,20 @@
             </div>
             <div class="hidden md:flex items-center gap-8 font-['Inter'] tracking-tight font-medium text-sm">
                 <a class="nav-link text-zinc-400 hover:text-zinc-100 border-b-2 border-transparent pb-1 transition-all duration-300"
-                    href="#intelligence">Certifications</a>
+                    href="#intelligence" data-i18n="nav_certs">Certifications</a>
                 <a class="nav-link text-zinc-400 hover:text-zinc-100 border-b-2 border-transparent pb-1 transition-all duration-300"
-                    href="#technical">Tools</a>
+                    href="#technical" data-i18n="nav_tools">Tools</a>
                 <a class="nav-link text-zinc-400 hover:text-zinc-100 border-b-2 border-transparent pb-1 transition-all duration-300"
-                    href="#archive">Trajectory</a>
+                    href="#archive" data-i18n="nav_trajectory">Trajectory</a>
                 <a class="nav-link text-zinc-400 hover:text-zinc-100 border-b-2 border-transparent pb-1 transition-all duration-300"
                     href="#writeups">Writeups</a>
                 <a class="nav-link text-zinc-400 hover:text-zinc-100 border-b-2 border-transparent pb-1 transition-all duration-300"
-                    href="#contact">Socials</a>
+                    href="#contact" data-i18n="nav_socials">Socials</a>
             </div>
             <div class="flex items-center gap-6">
+                <button id="lang-toggle" class="text-zinc-400 font-bold hover:text-white transition-colors uppercase tracking-widest text-sm">ES</button>
                 <a class="hidden md:block bg-gradient-to-br from-primary to-primary-container px-6 py-2 rounded-full text-on-primary font-semibold text-sm scale-95 duration-200 active:opacity-80"
-                    href="#contact">
+                    href="#contact" data-i18n="nav_contact">
                     Contact
                 </a>
             </div>
@@ -248,14 +249,14 @@
                                 class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                             <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                         </span>
-                        Active: CTF &amp; Bug Bounties
+                        <span data-i18n="hero_tag">Active: CTF &amp; Bug Bounties</span>
                     </div>
                     <div class="space-y-4">
                         <h1 class="text-5xl md:text-7xl font-bold tracking-tighter leading-tight">
                             Alvaro Saura <br />
                             <span class="text-gradient">0xWinter</span>
                         </h1>
-                        <p class="text-xl md:text-2xl text-on-surface-variant max-w-xl leading-relaxed">
+                        <p class="text-xl md:text-2xl text-on-surface-variant max-w-xl leading-relaxed" data-i18n="hero_desc">
                             Cybersecurity Expert. Red Team eJPTv2 &amp; Blue Team Google Certified. Specialized in
                             offensive security and defensive intelligence.
                         </p>
@@ -275,13 +276,13 @@
                         </div>
                     </div>
                     <div class="flex flex-wrap gap-4 pt-4">
-                        <a class="px-8 py-4 rounded-full bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold transition-transform hover:scale-[1.02] active:scale-95"
+                        <a class="px-8 py-4 rounded-full bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold transition-transform hover:scale-[1.02] active:scale-95 flex items-center justify-center align-middle"
                             href="https://wa.me/34722894783?text=">
-                            Direct Link
+                            <span data-i18n="hero_btn1">Direct Link</span>
                         </a>
-                        <a class="px-8 py-4 rounded-full glass-panel text-zinc-100 font-bold hover:bg-white/5 transition-all"
+                        <a class="px-8 py-4 rounded-full glass-panel text-zinc-100 font-bold hover:bg-white/5 transition-all flex items-center gap-2"
                             href="#technical">
-                            View Arsenal
+                            <span data-i18n="hero_btn2">View Arsenal</span>
                         </a>
                     </div>
                 </div>
@@ -303,7 +304,7 @@
         <!-- Certifications -->
         <section class="px-6 md:px-12 max-w-7xl mx-auto py-24" id="intelligence">
             <div class="mb-16">
-                <h2 class="text-zinc-500 uppercase tracking-[0.2em] text-xs font-bold mb-4">Core Accreditations</h2>
+                <h2 class="text-zinc-500 uppercase tracking-[0.2em] text-xs font-bold mb-4" data-i18n="cert_title">Core Accreditations</h2>
                 <div class="h-1 w-20 bg-primary"></div>
             </div>
             <div class="grid md:grid-cols-3 gap-8">
@@ -324,7 +325,7 @@
                         </svg>
                     </div>
                     <h3 class="text-2xl font-bold mb-4">eJPTv2</h3>
-                    <p class="text-on-surface-variant text-sm leading-relaxed">Junior Penetration Tester certification
+                    <p class="text-on-surface-variant text-sm leading-relaxed" data-i18n="cert_ejpt_desc">Junior Penetration Tester certification
                         focused on practical penetration testing methodologies and techniques. Red Team tools and OSINT
                         techniques.</p>
                 </div>
@@ -342,7 +343,7 @@
                         </svg>
                     </div>
                     <h3 class="text-2xl font-bold mb-4">Google Cybersecurity</h3>
-                    <p class="text-on-surface-variant text-sm leading-relaxed">Comprehensive professional training in
+                    <p class="text-on-surface-variant text-sm leading-relaxed" data-i18n="cert_google_desc">Comprehensive professional training in
                         threat detection, response, and security operations. SIEM operating and database operations.</p>
                 </div>
                 <div class="glass-panel p-10 rounded-xl group flex flex-col">
@@ -355,7 +356,7 @@
                         </svg>
                     </div>
                     <h3 class="text-2xl font-bold mb-4">CISCO Network Defense</h3>
-                    <p class="text-on-surface-variant text-sm leading-relaxed">Strategic network architecture defense
+                    <p class="text-on-surface-variant text-sm leading-relaxed" data-i18n="cert_cisco_desc">Strategic network architecture defense
                         and enterprise-level infrastructure security, as well as hardening techniques and international
                         regulations.
                     </p>
@@ -365,8 +366,8 @@
         <!-- Technical Arsenal (Bento Grid) -->
         <section class="px-6 md:px-12 max-w-7xl mx-auto py-24" id="technical">
             <div class="mb-16 text-center">
-                <h2 class="text-zinc-500 uppercase tracking-[0.2em] text-xs font-bold mb-4">Technical Arsenal</h2>
-                <p class="text-3xl font-bold tracking-tight">Precision Grade Tooling</p>
+                <h2 class="text-zinc-500 uppercase tracking-[0.2em] text-xs font-bold mb-4" data-i18n="tools_pretitle">Technical Arsenal</h2>
+                <p class="text-3xl font-bold tracking-tight" data-i18n="tools_title">Precision Grade Tooling</p>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div
@@ -438,7 +439,7 @@
                     class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 aspect-square hover:bg-primary/5 transition-colors">
                     <span class="material-symbols-outlined text-3xl text-primary">terminal</span>
                     <div class="flex flex-col items-center gap-1.5">
-                        <span class="text-base font-bold tracking-tight text-center leading-none">wfuzz</span>
+                        <span class="text-base font-bold tracking-tight text-center leading-none">Wfuzz</span>
                         <span
                             class="text-[10px] text-zinc-500 uppercase tracking-widest text-center leading-none">DIRECTORY
                             FUZZING</span>
@@ -448,7 +449,7 @@
                     class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 aspect-square hover:bg-primary/5 transition-colors">
                     <span class="material-symbols-outlined text-3xl text-primary">folder_open</span>
                     <div class="flex flex-col items-center gap-1.5">
-                        <span class="text-base font-bold tracking-tight text-center leading-none">gobuster</span>
+                        <span class="text-base font-bold tracking-tight text-center leading-none">Gobuster</span>
                         <span
                             class="text-[10px] text-zinc-500 uppercase tracking-widest text-center leading-none">DIRECTORY
                             FUZZING</span>
@@ -458,7 +459,7 @@
                     class="glass-panel p-6 rounded-xl flex flex-col items-center justify-center gap-4 aspect-square hover:bg-primary/5 transition-colors">
                     <span class="material-symbols-outlined text-3xl text-primary">key</span>
                     <div class="flex flex-col items-center gap-1.5">
-                        <span class="text-base font-bold tracking-tight text-center leading-none">hashcat</span>
+                        <span class="text-base font-bold tracking-tight text-center leading-none">Hashcat</span>
                         <span class="text-[10px] text-zinc-500 uppercase tracking-widest text-center leading-none">HASH
                             CRACKING</span>
                     </div>
@@ -486,8 +487,8 @@
         <!-- Timeline (Editorial Layout) -->
         <section class="px-6 md:px-12 max-w-4xl mx-auto py-24" id="archive">
             <div class="mb-16">
-                <h2 class="text-zinc-500 uppercase tracking-[0.2em] text-xs font-bold mb-4">Trajectory</h2>
-                <p class="text-3xl font-bold tracking-tight">Professional Evolution</p>
+                <h2 class="text-zinc-500 uppercase tracking-[0.2em] text-xs font-bold mb-4" data-i18n="traj_pretitle">Trajectory</h2>
+                <p class="text-3xl font-bold tracking-tight" data-i18n="traj_title">Professional Evolution</p>
             </div>
             <div class="space-y-0 relative border-l border-zinc-800 ml-4 md:ml-0">
                 <div class="relative pl-12 pb-16">
@@ -497,7 +498,7 @@
                     <span class="text-primary font-mono text-sm tracking-tighter block mb-2">2025 — 2026</span>
                     <h3 class="text-xl font-bold mb-2">CISCO Network Defense &amp; Google Cybersecurity Certificates
                     </h3>
-                    <p class="text-on-surface-variant leading-relaxed">Advanced academic specialization in architectural
+                    <p class="text-on-surface-variant leading-relaxed" data-i18n="traj_cisco_desc">Advanced academic specialization in architectural
                         defense systems and enterprise-grade threat management.</p>
                 </div>
                 <div class="relative pl-12 pb-16">
@@ -506,21 +507,21 @@
                     </div>
                     <span class="text-zinc-500 font-mono text-sm tracking-tighter block mb-2">2023 — 2025</span>
                     <h3 class="text-xl font-bold mb-2">eJPTv2 CERTIFICATION</h3>
-                    <p class="text-on-surface-variant leading-relaxed">Successful mastery of offensive security
+                    <p class="text-on-surface-variant leading-relaxed" data-i18n="traj_ejpt_desc">Successful mastery of offensive security
                         methodologies, penetration testing, and ethical hacking protocols.</p>
                 </div>
                 <div class="relative pl-12 pb-16">
                     <div class="absolute w-4 h-4 bg-zinc-800 rounded-full -left-2 top-0"></div>
                     <span class="text-zinc-500 font-mono text-sm tracking-tighter block mb-2">2018 — 2023</span>
-                    <h3 class="text-xl font-bold mb-2">System Administrator &amp; Computer Repair Technician</h3>
-                    <p class="text-on-surface-variant leading-relaxed">Infrastructure maintenance, system
+                    <h3 class="text-xl font-bold mb-2" data-i18n="traj_sysadmin">System Administrator &amp; Computer Repair Technician</h3>
+                    <p class="text-on-surface-variant leading-relaxed" data-i18n="traj_sysadmin_desc">Infrastructure maintenance, system
                         troubleshooting, and hardware engineering across multiple hardware environments.</p>
                 </div>
                 <div class="relative pl-12">
                     <div class="absolute w-4 h-4 bg-zinc-800 rounded-full -left-2 top-0"></div>
                     <span class="text-zinc-500 font-mono text-sm tracking-tighter block mb-2">2016 — 2018</span>
-                    <h3 class="text-xl font-bold mb-2">Grado en Sistemas Microinformáticos y Redes</h3>
-                    <p class="text-on-surface-variant leading-relaxed">Foundational training in networking, computing
+                    <h3 class="text-xl font-bold mb-2" data-i18n="traj_grado">Grado en Sistemas Microinformáticos y Redes</h3>
+                    <p class="text-on-surface-variant leading-relaxed" data-i18n="traj_grado_desc">Foundational training in networking, computing
                         systems, and technical infrastructure management.</p>
                 </div>
             </div>
@@ -529,10 +530,10 @@
         <section class="max-w-7xl mx-auto px-6 md:px-12 py-24" id="writeups">
             <div class="mb-16">
                 <div class="h-1 w-20 bg-primary mb-6"></div>
-                <h2 class="text-3xl font-bold tracking-tight mb-4">Machines Solved</h2>
+                <h2 class="text-3xl font-bold tracking-tight mb-4" data-i18n="writeups_title">Machines Solved</h2>
                 <p class="text-zinc-500 text-sm flex items-center gap-2">
                     <span class="material-symbols-outlined text-[16px]">info</span>
-                    * Please note that all writeups are completely in English.
+                    <span data-i18n="writeups_disclaimer">* Please note that all writeups are completely in English.</span>
                 </p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -543,10 +544,10 @@
                             <span class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold block mb-1">HackTheBox</span>
                             <h3 class="text-xl font-bold text-zinc-100 group-hover:text-primary transition-colors">Keeper</h3>
                         </div>
-                        <span class="px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 text-[10px] uppercase tracking-widest font-bold rounded-full">Easy</span>
+                        <span class="px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 text-[10px] uppercase tracking-widest font-bold rounded-full" data-i18n="writeups_easy">Easy</span>
                     </div>
                     <div class="w-full flex items-center justify-between text-zinc-400 group-hover:text-primary transition-colors border-t border-white/5 pt-4">
-                        <span class="text-xs font-semibold uppercase tracking-widest">Read Writeup</span>
+                        <span class="text-xs font-semibold uppercase tracking-widest" data-i18n="writeups_read">Read Writeup</span>
                         <span class="material-symbols-outlined text-sm">open_in_new</span>
                     </div>
                 </a>
@@ -558,10 +559,10 @@
                             <span class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold block mb-1">HackTheBox</span>
                             <h3 class="text-xl font-bold text-zinc-100 group-hover:text-primary transition-colors">Nibbles</h3>
                         </div>
-                        <span class="px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 text-[10px] uppercase tracking-widest font-bold rounded-full">Easy</span>
+                        <span class="px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 text-[10px] uppercase tracking-widest font-bold rounded-full" data-i18n="writeups_easy">Easy</span>
                     </div>
                     <div class="w-full flex items-center justify-between text-zinc-400 group-hover:text-primary transition-colors border-t border-white/5 pt-4">
-                        <span class="text-xs font-semibold uppercase tracking-widest">Read Writeup</span>
+                        <span class="text-xs font-semibold uppercase tracking-widest" data-i18n="writeups_read">Read Writeup</span>
                         <span class="material-symbols-outlined text-sm">open_in_new</span>
                     </div>
                 </a>
@@ -573,10 +574,10 @@
                             <span class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold block mb-1">HackTheBox</span>
                             <h3 class="text-xl font-bold text-zinc-100 group-hover:text-primary transition-colors">Lame</h3>
                         </div>
-                        <span class="px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 text-[10px] uppercase tracking-widest font-bold rounded-full">Easy</span>
+                        <span class="px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 text-[10px] uppercase tracking-widest font-bold rounded-full" data-i18n="writeups_easy">Easy</span>
                     </div>
                     <div class="w-full flex items-center justify-between text-zinc-400 group-hover:text-primary transition-colors border-t border-white/5 pt-4">
-                        <span class="text-xs font-semibold uppercase tracking-widest">Read Writeup</span>
+                        <span class="text-xs font-semibold uppercase tracking-widest" data-i18n="writeups_read">Read Writeup</span>
                         <span class="material-symbols-outlined text-sm">open_in_new</span>
                     </div>
                 </a>
@@ -588,10 +589,10 @@
                             <span class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold block mb-1">TryHackMe</span>
                             <h3 class="text-xl font-bold text-zinc-100 group-hover:text-primary transition-colors">Anonymous</h3>
                         </div>
-                        <span class="px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] uppercase tracking-widest font-bold rounded-full">Medium</span>
+                        <span class="px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] uppercase tracking-widest font-bold rounded-full" data-i18n="writeups_medium">Medium</span>
                     </div>
                     <div class="w-full flex items-center justify-between text-zinc-400 group-hover:text-primary transition-colors border-t border-white/5 pt-4">
-                        <span class="text-xs font-semibold uppercase tracking-widest">Read Writeup</span>
+                        <span class="text-xs font-semibold uppercase tracking-widest" data-i18n="writeups_read">Read Writeup</span>
                         <span class="material-symbols-outlined text-sm">open_in_new</span>
                     </div>
                 </a>
@@ -603,10 +604,10 @@
                             <span class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold block mb-1">TryHackMe</span>
                             <h3 class="text-xl font-bold text-zinc-100 group-hover:text-primary transition-colors">GoldenEye</h3>
                         </div>
-                        <span class="px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] uppercase tracking-widest font-bold rounded-full">Medium</span>
+                        <span class="px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] uppercase tracking-widest font-bold rounded-full" data-i18n="writeups_medium">Medium</span>
                     </div>
                     <div class="w-full flex items-center justify-between text-zinc-400 group-hover:text-primary transition-colors border-t border-white/5 pt-4">
-                        <span class="text-xs font-semibold uppercase tracking-widest">Read Writeup</span>
+                        <span class="text-xs font-semibold uppercase tracking-widest" data-i18n="writeups_read">Read Writeup</span>
                         <span class="material-symbols-outlined text-sm">open_in_new</span>
                     </div>
                 </a>
@@ -618,10 +619,10 @@
                             <span class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold block mb-1">TryHackMe</span>
                             <h3 class="text-xl font-bold text-zinc-100 group-hover:text-primary transition-colors">Cybercrafted</h3>
                         </div>
-                        <span class="px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] uppercase tracking-widest font-bold rounded-full">Medium</span>
+                        <span class="px-3 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] uppercase tracking-widest font-bold rounded-full" data-i18n="writeups_medium">Medium</span>
                     </div>
                     <div class="w-full flex items-center justify-between text-zinc-400 group-hover:text-primary transition-colors border-t border-white/5 pt-4">
-                        <span class="text-xs font-semibold uppercase tracking-widest">Read Writeup</span>
+                        <span class="text-xs font-semibold uppercase tracking-widest" data-i18n="writeups_read">Read Writeup</span>
                         <span class="material-symbols-outlined text-sm">open_in_new</span>
                     </div>
                 </a>
@@ -631,9 +632,9 @@
         <section class="px-6 md:px-12 max-w-7xl mx-auto py-24" id="contact">
             <div class="glass-panel p-12 md:p-20 rounded-3xl text-center relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] -mr-32 -mt-32"></div>
-                <h2 class="text-4xl md:text-6xl font-bold tracking-tighter mb-8">Establish Connection</h2>
-                <p class="text-on-surface-variant text-lg max-w-2xl mx-auto mb-12 leading-relaxed">
-                    Ready to fortify your perimeter or discuss cybersecurity strategies. Reach out via secure channels.
+                <h2 class="text-4xl md:text-6xl font-bold tracking-tighter mb-8" data-i18n="contact_title">Contact Me</h2>
+                <p class="text-on-surface-variant text-lg max-w-2xl mx-auto mb-12 leading-relaxed" data-i18n="contact_desc">
+                    Focused on building environments that are safer, more efficient, and better prepared for real-world attacks.
                 </p>
                 <div class="flex flex-col md:flex-row items-center justify-center gap-6">
                     <a class="w-full lg:w-56 px-6 py-5 glass-panel rounded-xl flex items-center justify-center gap-3 hover:bg-white/5 transition-all text-zinc-100 font-bold tracking-tight"
@@ -677,6 +678,7 @@
             </div>
         </div>
     </footer>
+    <script src="assets/lang.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const sections = document.querySelectorAll("section[id]");
