@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>W1seguy - TryHackMe Machine</title>
+    <!-- Highlight.js for code blocks -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/tokyo-night-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <!-- Marked.js for markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-color: #020203; /* Main portfolio BG */
+            --text-color: #e4e2e4;
+            --accent-color: #0071e3;
+            --primary: #abc7ff;
+            --code-bg: #131315; /* darker surface */
+            --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+            --border-color: rgba(255, 255, 255, 0.05);
+            --link-color: #abc7ff;
+            
+            /* Terminal aesthetic vars */
+            --term-border: #4d3a68;
+            --term-bg: rgba(26, 17, 36, 0.85); /* Dark purple tint */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Aurora Blobs */
+        .aurora-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -10;
+            overflow: hidden;
+            background: #020203;
+            pointer-events: none;
+        }
+
+        .aurora-blob {
+            position: absolute;
+            filter: blur(120px);
+            opacity: 0.7;
+            animation: float 20s infinite ease-in-out alternate;
+            border-radius: 50%;
+        }
+
+        .blob-1 { top: -20%; left: -10%; width: 60vw; height: 60vh; background: rgba(150, 10, 103, 0.35); animation-delay: 0s; }
+        .blob-2 { top: 30%; left: 50%; width: 70vw; height: 70vh; background: rgba(139, 92, 246, 0.3); animation-delay: -5s; }
+        .blob-3 { bottom: -20%; left: 10%; width: 50vw; height: 50vh; background: rgba(18, 8, 153, 0.25); animation-delay: -10s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            33% { transform: translate(15vw, -10vh) scale(1.1) rotate(5deg); }
+            66% { transform: translate(-10vw, 10vh) scale(0.9) rotate(-5deg); }
+            100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+        }
+
+        #glass-container {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 50px 60px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px) saturate(150%);
+            -webkit-backdrop-filter: blur(16px) saturate(150%);
+            border: 1px solid var(--border-color);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+            font-size: 16px;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: #ffffff;
+            margin-top: 2em;
+            margin-bottom: 0.5em;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        h1 { font-size: 2.5em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-top: 0.5em;}
+        h2 { font-size: 1.8em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        h3 { font-size: 1.4em; }
+
+        a { color: var(--link-color); text-decoration: none; transition: opacity 0.2s; }
+        a:hover { opacity: 0.8; text-decoration: underline; }
+
+        p { margin-bottom: 1.5em; }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 30px auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        pre {
+            background-color: #1a1025 !important;
+            padding: 45px 24px 24px 24px; /* Extra top padding for the header */
+            border-radius: 10px;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle window outline */
+            margin: 2.5em 0;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); /* Deep drop shadow */
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        /* Terminal window header */
+        pre::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 32px;
+            background: #251833; /* Slightly lighter header bar */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 0;
+        }
+
+        /* Window controls (Mac style dots) */
+        pre::after {
+            content: '';
+            position: absolute;
+            top: 11px;
+            left: 16px;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background-color: #ff5f56;
+            box-shadow: 19px 0 0 #ffbd2e, 38px 0 0 #27c93f;
+            z-index: 1;
+        }
+
+        code {
+            font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Consolas', monospace;
+            font-size: 0.85em;
+            background-color: rgba(255,255,255,0.05);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        
+        pre code, pre code.hljs {
+            border: none;
+            padding: 0;
+            background-color: transparent !important;
+            white-space: pre;
+            word-wrap: normal;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Powerline/Terminal prompt styles for text elements inside code that might resemble prompts */
+        .hljs-meta { color: #8b5cf6 !important; font-weight: bold; } /* Makes prompts pop */
+        .hljs-string { color: #10b981 !important; }
+        .hljs-keyword { color: #3b82f6 !important; }
+        .hljs-title.function_ { color: #f59e0b !important; }
+
+        blockquote {
+            border-left: 4px solid var(--primary);
+            margin: 2em 0;
+            padding: 15px 24px;
+            color: #c1c6d6;
+            background-color: rgba(171, 199, 255, 0.05);
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+        }
+
+        ul, ol { padding-left: 2rem; margin-bottom: 1.5em; }
+        li { margin-bottom: 0.5em; }
+        hr { border: 0; height: 1px; background: rgba(255,255,255,0.1); margin: 3em 0; }
+
+        table { border-collapse: collapse; width: 100%; margin-bottom: 2em; border-radius: 8px; overflow: hidden; }
+        table, th, td { border: 1px solid rgba(255,255,255,0.1); }
+        th, td { padding: 12px 16px; text-align: left; }
+        th { background-color: var(--code-bg); font-weight: 600; }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+            color: var(--text-color);
+            font-size: 0.9em;
+            opacity: 0.6;
+            transition: all 0.2s;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .back-button:hover { opacity: 1; text-decoration: none; color: white; transform: translateX(-4px); }
+        
+        /* Mobile fixes */
+        @media (max-width: 768px) {
+            #glass-container { margin: 20px; padding: 30px 20px; }
+            h1 { font-size: 2em; }
+        }
+    </style>
+    <!-- MathJax for rendering equations -->
+    <script>
+        MathJax = {
+          tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+          svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <div class="aurora-bg">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="aurora-blob blob-3"></div>
+    </div>
+
+    <div id="glass-container">
+        <a href="../../index.html#writeups" class="back-button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            BACK TO PORTFOLIO
+        </a>
+        <div id="content"></div>
+    </div>
+
+    <script>
+        // Use marked options for github flavored markdown
+        marked.setOptions({
+            gfm: true,
+            breaks: true,
+        });
+
+        // The markdown file to fetch
+        const markdownFile = 'W1seGuy TryHackMe.md';
+
+        fetch(markdownFile)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(text => {
+                // Pre-process Obsidian image wikilinks ![[image.png]] -> ![image.png](image.png)
+                let processedText = text.replace(/!\[\[(.*?)\]\]/g, '![$1]($1)');
+                
+                // Parse markdown to HTML
+                let htmlContent = marked.parse(processedText);
+                
+                document.getElementById('content').innerHTML = htmlContent;
+                
+                // Apply syntax highlighting
+                document.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
+
+                // Let MathJax process math blocks newly injected
+                if (window.MathJax) {
+                    MathJax.typesetPromise([document.getElementById('content')]).catch(function (err) {
+                        console.error('MathJax error: ', err.message);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Fetch failed, falling back to embedded content', error);
+                
+                // If fetch fails (CORS error from file://), fallback to the embedded markdown string.
+                // We fetch the markdown via a hidden textarea created safely in the script.
+                const preloadedRawMarkdown = document.getElementById('embedded-markdown').value;
+                let processedText = preloadedRawMarkdown.replace(/!\[\[(.*?)\]\]/g, '![$1]($1)');
+                let htmlContent = marked.parse(processedText);
+                document.getElementById('content').innerHTML = htmlContent;
+                
+                document.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
+
+                if (window.MathJax) {
+                    MathJax.typesetPromise([document.getElementById('content')]);
+                }
+            });
+    </script>
+    <textarea id="embedded-markdown" style="display:none;">
+First of all, we have to download and understand what is this room about, because this is not a "hacking" challenge exactly.
+
+We will start checking the source code that we can download directly from the room itself:
+```
+import random
+import socketserver 
+import socket, os
+import string
+
+flag = open('flag.txt','r').read().strip()
+
+def send_message(server, message):
+    enc = message.encode()
+    server.send(enc)
+
+def setup(server, key):
+    flag = 'THM{thisisafakeflag}' 
+    xored = ""
+
+    for i in range(0,len(flag)):
+        xored += chr(ord(flag[i]) ^ ord(key[i%len(key)]))
+
+    hex_encoded = xored.encode().hex()
+    return hex_encoded
+
+def start(server):
+    res = ''.join(random.choices(string.ascii_letters + string.digits, k=5))
+    key = str(res)
+    hex_encoded = setup(server, key)
+    send_message(server, "This XOR encoded text has flag 1: " + hex_encoded + "\n")
+    
+    send_message(server,"What is the encryption key? ")
+    key_answer = server.recv(4096).decode().strip()
+
+    try:
+        if key_answer == key:
+            send_message(server, "Congrats! That is the correct key! Here is flag 2: " + flag + "\n")
+            server.close()
+        else:
+            send_message(server, 'Close but no cigar' + "\n")
+            server.close()
+    except:
+        send_message(server, "Something went wrong. Please try again. :)\n")
+        server.close()
+
+class RequestHandler(socketserver.BaseRequestHandler):
+    def handle(self):
+        start(self.request)
+
+if __name__ == '__main__':
+    socketserver.ThreadingTCPServer.allow_reuse_address = True
+    server = socketserver.ThreadingTCPServer(('0.0.0.0', 1337), RequestHandler)
+    server.serve_forever()
+```
+
+This is a classic cryptography challenge designed to teach you how to perform a Known-Plaintext Attack by exploiting a vulnerable implementation of XOR. Instead of trying to break complex mathematical algorithms, the exercise demonstrates how a logical flaw in the system’s architecture completely undermines its security: the server makes the fatal mistake of giving you the encrypted result of a text string that you already know in advance` (THM{thisisafakeflag})`. Since the XOR operation is perfectly symmetric, the key cybersecurity lesson here is that exposing or making the structure of your data (the “plaintext”) predictable gives the attacker the exact piece they need to reverse the equation, reveal the original encryption key, and compromise the entire defense mechanism.
+
+### Enumeration
+Here there's not much enumeration to do, but with a simple nmap we can see a strange port:
+
+```
+❯ nmap -sV -O -Pn -p- --min-rate 5000 10.128.137.21
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-04-16 22:29 CEST
+Nmap scan report for 10.128.137.21
+Host is up (0.028s latency).
+Not shown: 65533 closed tcp ports (reset)
+PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.13 (Ubuntu Linux; protocol 2.0)
+1337/tcp open  waste?
+1 service unrecognized despite returning data. If you know the service/version
+```
+
+Let's perform a `nc` to see what that port hides.
+
+```
+❯ nc 10.128.137.21 1337
+This XOR encoded text has flag 1: 1d251c3d42780c3d28460c152507463d59322d5108032375532521282e673b192876473b151e344f
+What is the encryption key? 
+```
+
+### Breaking down the code
+
+We know from the server code that the key is exactly 5 characters long. Therefore, we don't need to decrypt the entire message at once; decrypting the first 5-byte block is enough to obtain the full key.
+
+- `1d251c3d42` These are the first 5 bytes. Remember that in hexadecimal, every 2 characters represent 1 byte.
+- `THM{t` These are the first 5 characters of the fake flag that the server encrypted:  `THM{thisisafakeflag}`.
+
+In order for the computer to perform the XOR (^) mathematical operation, we cannot work directly with letters or hexadecimal strings. Everything must be converted to its numerical value (bytes or integers).
+
+### The PoC python code
+So, we made a python script to automate the whole process:
+```
+import socket
+import string
+
+def xor_decrypt(hex_encoded, key):
+    ciphertext = bytes.fromhex(hex_encoded)
+    result = ""
+    for i in range(len(ciphertext)):
+        result += chr(ciphertext[i] ^ ord(key[i % len(key)]))
+    return result
+
+def recover_key(hex_encoded):
+    ciphertext = bytes.fromhex(hex_encoded)
+    known_prefix = "THM{"
+    
+    partial_key = ""
+    for i in range(4):
+        partial_key += chr(ciphertext[i] ^ ord(known_prefix[i]))
+    
+    charset = string.ascii_letters + string.digits
+    for c in charset:
+        candidate_key = partial_key + c
+        decrypted = xor_decrypt(hex_encoded, candidate_key)
+        if decrypted.startswith("THM{") and decrypted.endswith("}"):
+            return candidate_key
+    
+    return None
+
+HOST = "10.128.137.21"
+PORT = 1337
+
+s = socket.socket()
+s.connect((HOST, PORT))
+
+data = s.recv(4096).decode()
+print(data)
+
+hex_encoded = data.split(": ")[1].strip()
+
+key = recover_key(hex_encoded)
+print(f"[+] Key found: {key}")
+print(f"[+] Flag 1: {xor_decrypt(hex_encoded, key)}")
+
+question = s.recv(4096).decode()
+print(question)
+
+s.send((key + "\n").encode())
+
+response = s.recv(4096).decode()
+print(response)
+
+s.close()
+```
+
+Now we just execute it and we should get the flags!
+```
+❯ python3 decode.py
+This XOR encoded text has flag 1: 103f1c4c2175163d5925010f2576253043325c320519230430283b285f043603280724360f1e452c
+
+[+] Key found: DwQ7Q
+[+] Flag 1: THM{xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx}
+What is the encryption key? 
+Congrats! That is the correct key! Here is flag 2: THM{xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx}
+```
+
+Alright! We have the two flags, so we completed the room!
+    </textarea>
+</body>
+</html>
