@@ -216,6 +216,13 @@
             #glass-container { margin: 20px; padding: 30px 20px; }
             h1 { font-size: 2em; }
         }
+
+        /* Elegant Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(171, 199, 255, 0.5); }
+        * { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.15) transparent; }
     </style>
     <!-- MathJax for rendering equations -->
     <script>
