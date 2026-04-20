@@ -335,9 +335,9 @@ So let's check the files downloaded by the Client 02 by accessing the C director
 .rw-rw-r-- winter winter 426 MB Fri Feb  3 13:16:54 2017  '$MFT'
 ```
 
-The $MFT file is essentially a database where NTFS stores information about every file and directory on a volume. Every time a file is created, deleted, or moved, the $MFT is updated.
+The `$MFT` file is essentially a database where NTFS stores information about every file and directory on a volume. Every time a file is created, deleted, or moved, the `$MFT` is updated.
 
-Given that our $MFT is about 500 MB in size, we’ll need to filter and refine the search carefully to get readable results.
+Given that our `$MFT` is about 500 MB in size, we’ll need to filter and refine the search carefully to get readable results.
 So let's use this one-liner:
 ```
 strings '$MFT' | grep -i "Downloads" | less
